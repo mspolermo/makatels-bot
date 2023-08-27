@@ -8,7 +8,7 @@ export function getMainMenu() {
         ],
         [
             {
-                text: 'Отправить запрос на новое зеркало',
+                text: 'Обновить ссыль на зеркало',
                 callback_data: 'sendReq'
             }
         ],

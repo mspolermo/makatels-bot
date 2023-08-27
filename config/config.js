@@ -8,3 +8,8 @@ export const senderPassword = 'mrkymkuujxeziczh';
 export const recipientEmail = 'mirror@kinoland.club';
 
 export const supportMail = 'support@kinoland.club';
+
+const hostingLogin = b98269f5;
+const hostingPassword = cfNJG7is;
+const loginFtpAccount = b98269f5_ms;
+const passwordFtpAccount = cfNJG7is! ;

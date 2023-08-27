@@ -8,12 +8,12 @@ import { getMixedString } from './getMixedString.js';
 
 const askDictionary = {
     mirror: {
-        subject: 'Хочу зеркало',
+        subject: 'Хочу получить ссылку на зеркало',
         text: 'Где зеркало, Лебовски'
     },
     ticket: {
-        subject: 'Не получаю ответ',
-        text: 'Добрый день! Отправляю запрос на почту support@kinoland.club, но не получаю ссылку на зеркало('
+        subject: 'Не получаю ответ на запрос ссылки',
+        text: 'Добрый день! Отправляю запрос, но не получаю ссылку на зеркало( Может быть я попал в черный список?'
     }
 }
 
@@ -21,12 +21,15 @@ const askDictionary = {
 export async function sendEmail(type) {
     let subject = '';
     let text = '';
-    if (type == 'mirror') {
-        subject = getMixedString (askDictionary.mirror.subject);
-        text = getMixedString (askDictionary.mirror.subject);
-    } else if (type == 'ticket') {
-        subject = getMixedString (askDictionary.ticket.subject);
-        text = getMixedString (askDictionary.ticket.subject);
+    switch(type) {
+        case 'ticket' :
+            subject = getMixedString (askDictionary.ticket.subject);
+            text = getMixedString (askDictionary.ticket.text);
+            break;
+        default:
+            subject = getMixedString (askDictionary.mirror.subject);
+            text = getMixedString (askDictionary.mirror.text);
+            break;
     }
 
     const transporter = nodemailer.createTransport({
