@@ -1,10 +1,13 @@
 import { bot } from './utils/getBot.js';
-import { getMainMenu } from './utils/getMainMenu.js';
+import { getMainMenu, getChoiceMenu, getTaxiMenu } from './utils/getMenu.js';
 import { sendEmail } from './utils/sendEmail.js';
 import { replyCheck } from './utils/replyCheck.js';
 
+// Объект для хранения значения mirrorType
+const state = {};
+
 const mainMenuData = {
-    caption: 'Салют, Макатель. Будем смотреть кинчик?',
+    caption: 'Салют, Макатель. Че мутим?',
     reply_markup: {
         inline_keyboard: getMainMenu()
     }
@@ -18,21 +21,71 @@ bot.on('message', (msg) => {
 bot.on('callback_query', (query) => {
     const chatId = query.message.chat.id;
 
-    if (query.data === 'checkLastReply') {
-        
-        replyCheck(chatId);
-
+    // Отправка меню действия с зерккалом кинчиков
+    const choiceMenuData = {
+        caption: `Оке, вот ${query.data}, че дальше:`,
+        reply_markup: {
+            inline_keyboard: getChoiceMenu(query.data)
+        }
     };
+
+    const taxiMenuData = {
+        caption: 'Куда звоним:',
+        reply_markup: {
+            inline_keyboard: getTaxiMenu()
+        }
+    };
+
+    // Ответы на главное меню
+    if (query.data === 'kinoland') {
+        bot.sendPhoto(chatId, './static/kinoland.jpeg', choiceMenuData);
+        state[chatId] = { mirrorType: 'kinoland' };
+    }
+    
+    if (query.data === 'hdrezka') {
+        bot.sendPhoto(chatId, './static/hdrezka.jpeg', choiceMenuData);
+        state[chatId] = { mirrorType: 'hdrezka' };
+    }
+
+    // Ответы на меню действия с зерккалом кинчиков
+    if (query.data === 'checkLastReply') {
+        const mirrorType = state[chatId] ? state[chatId].mirrorType : '';
+        replyCheck(chatId, mirrorType);
+    }
 
     if (query.data === 'sendReq') {
-        sendEmail('mirror');
-        bot.sendMessage(chatId, 'Запрос отправил. Погоди пару минут и попробуй чекнуть последний ссыль');
-        setTimeout( () => bot.sendPhoto(chatId, './static/M.jpg', mainMenuData), 2000);
-    };
+        const mirrorType = state[chatId] ? state[chatId].mirrorType : '';
+        sendEmail('mirror', mirrorType);
+        bot.sendMessage(chatId, 'Запрос отправлен. Подожди несколько минут и попробуй проверить последнюю ссылку. Если она не обновится в течение 15 минут, отправь жалобу в техподдержку');
+        setTimeout(() => bot.sendPhoto(chatId, './static/M.jpg', mainMenuData), 2000);
+    }
 
     if (query.data === 'createTicket') {
-        sendEmail('ticket');
-        bot.sendMessage(chatId, 'Разработчикам отправлен репорт о проблемах с обновлением ссыля');
-        setTimeout( () => bot.sendPhoto(chatId, './static/M.jpg', mainMenuData), 2000);
-    };
+        const mirrorType = state[chatId] ? state[chatId].mirrorType : '';
+        sendEmail('ticket', mirrorType);
+        bot.sendMessage(chatId, 'Разработчикам отправлен отчет о проблемах с обновлением ссылки');
+        setTimeout(() => bot.sendPhoto(chatId, './static/M.jpg', mainMenuData), 2000);
+    }
+
+    // Обработчик для меню такси
+    if (query.data === 'taxi') {
+        const taxiMenuData = {
+            caption: 'Куда звоним:',
+            reply_markup: {
+                inline_keyboard: getTaxiMenu()
+            }
+        };
+        bot.sendPhoto(chatId, './static/taxi.jpeg', taxiMenuData);
+    }
+
+    // Обработка для номера такси
+    if (query.data.startsWith('tel:')) {
+        const phoneNumber = query.data.replace('tel:', '');
+        bot.sendMessage(chatId, `Братан наберай их сам: ${phoneNumber}. Пока хз как автонабор сделать на тельчиках.`);
+    }
+
+    // Возврат в "mainMenu"
+    if (query.data === 'mainMenu') {
+        bot.sendPhoto(chatId, './static/M.jpg', mainMenuData);
+    }
 });

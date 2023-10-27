@@ -2,9 +2,13 @@ import nodemailer from 'nodemailer';
 import {
     senderEmail,
     senderPassword,
-    recipientEmail
+    kinolandEmail,
+    kinolandSupportMail,
+    hdrezkaEmail,
+    hdrezkaSupportMail,
 } from '../config/config.js';
 import { getMixedString } from './getMixedString.js';
+
 
 const askDictionary = {
     mirror: {
@@ -18,17 +22,33 @@ const askDictionary = {
 }
 
 // Функция отправки письма
-export async function sendEmail(type) {
+export async function sendEmail(type, mirrorType) {
     let subject = '';
     let text = '';
+    let recipientEmail = '';
+
     switch(type) {
         case 'ticket' :
             subject = getMixedString (askDictionary.ticket.subject);
             text = getMixedString (askDictionary.ticket.text);
+            if (mirrorType === 'kinoland') {
+                recipientEmail = kinolandSupportMail;
+            }
+            if (mirrorType === 'hdrezka') {
+                recipientEmail = hdrezkaSupportMail;
+            }
             break;
-        default:
+        case 'mirror':
             subject = getMixedString (askDictionary.mirror.subject);
             text = getMixedString (askDictionary.mirror.text);
+            if (mirrorType === 'kinoland') {
+                recipientEmail = kinolandEmail;
+            }
+            if (mirrorType === 'hdrezka') {
+                recipientEmail = hdrezkaEmail;
+            }
+            break;
+        default:
             break;
     }
 
