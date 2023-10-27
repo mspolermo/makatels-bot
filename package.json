@@ -12,6 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
+    "json-server": "^0.17.4",
     "mailparser": "^3.6.5",
     "node-imap": "^0.9.6",
     "node-telegram-bot-api": "0.61.0",
