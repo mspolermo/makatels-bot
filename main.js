@@ -3,6 +3,8 @@ import { getMainMenu, getChoiceMenu, getTaxiMenu } from './utils/getMenu.js';
 import { sendEmail } from './utils/sendEmail.js';
 import { replyCheck } from './utils/replyCheck.js';
 
+
+
 // Объект для хранения значения mirrorType
 const state = {};
 
@@ -70,7 +72,7 @@ bot.on('callback_query', (query) => {
     // Обработчик для меню такси
     if (query.data === 'taxi') {
         const taxiMenuData = {
-            caption: 'Куда звоним:',
+            caption: 'Полевские такси:',
             reply_markup: {
                 inline_keyboard: getTaxiMenu()
             }
@@ -80,8 +82,18 @@ bot.on('callback_query', (query) => {
 
     // Обработка для номера такси
     if (query.data.startsWith('tel:')) {
-        const phoneNumber = query.data.replace('tel:', '');
-        bot.sendMessage(chatId, `Братан наберай их сам: ${phoneNumber}. Пока хз как автонабор сделать на тельчиках.`);
+        const phoneNumber = query.data.replace('tel:', '');bot.sendMessage(chatId, `Набирай ${phoneNumber}`, {
+            reply_markup: {
+                keyboard: [[{ text: `Набирай ${phoneNumber}`, request_contact: true }]],
+                one_time_keyboard: true
+            }
+        });
+    }
+
+    // Обработка для открытия группы в Telegram
+    if (query.data.startsWith('link:')) {
+        const groupLink = query.data.replace('link:', '');
+        bot.sendMessage(chatId, `Линк на группу: ${groupLink}`);
     }
 
     // Возврат в "mainMenu"
