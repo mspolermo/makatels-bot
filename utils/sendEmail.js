@@ -6,6 +6,7 @@ import {
     kinolandSupportMail,
     hdrezkaEmail,
     hdrezkaSupportMail,
+    creatorEmail
 } from '../config/config.js';
 import { getMixedString } from './getMixedString.js';
 
@@ -18,7 +19,11 @@ const askDictionary = {
     ticket: {
         subject: 'Не получаю ответ на запрос ссылки',
         text: 'Добрый день! Отправляю запрос, но не получаю ссылку на зеркало( Может быть я попал в черный список?'
-    }
+    },
+    error: {
+        subject: 'Бот не робит',
+        text: 'Бот норм не извлекает ссылку, надо чекнуть'
+    },
 }
 
 // Функция отправки письма
@@ -47,6 +52,11 @@ export async function sendEmail(type, mirrorType) {
             if (mirrorType === 'hdrezka') {
                 recipientEmail = hdrezkaEmail;
             }
+            break;
+        case 'error': 
+            subject = askDictionary.error.subject;
+            text = askDictionary.error.text;
+            recipientEmail = creatorEmail;
             break;
         default:
             break;

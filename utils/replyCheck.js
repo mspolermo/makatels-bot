@@ -7,6 +7,7 @@ import {
     kinolandEmail,
     hdrezkaEmail
 } from '../config/config.js';
+import { sendEmail } from './sendEmail.js';
 
 let recipientEmail = '';
 
@@ -27,7 +28,8 @@ function extractPersonalLink(emailText, mirrorType) {
             return restOfString.substring(0, endIndex).trim(); // Извлекаем текст
         }
     }
-    return null; // Если текст не найден
+    sendEmail('error', 'null')
+    return ' отсутствует (ошибка извлечения линка). Репорт отправлен разработчику бота'; // Если текст не найден
 }
 
 // Функция получения последнего письма от отправителя
@@ -81,7 +83,7 @@ export function replyCheck (chatId, mirrorType ) {
     imap.once('ready', () => {
         getLastEmailFromSender(imap, (emailText) => {
             let value = extractPersonalLink(emailText, mirrorType);
-            bot.sendMessage(chatId, `Последний ссыль: ${value}`);
+            bot.sendMessage(chatId, `Последний ссыль на ${mirrorType}: ${value}`);
         });
     });
 
