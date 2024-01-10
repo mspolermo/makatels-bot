@@ -10,7 +10,6 @@ import {
 } from '../config/config.js';
 import { getMixedString } from './getMixedString.js';
 
-
 const askDictionary = {
     mirror: {
         subject: 'Хочу получить ссылку на зеркало',
