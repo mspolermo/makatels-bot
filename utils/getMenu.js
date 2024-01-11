@@ -14,8 +14,20 @@ export function getMainMenu() {
         ],
         [
             {
-                text: '🚖  Двигаемся по городу',
-                callback_data: 'taxi'
+                text: '🚖  Двигаемся по городу (Юг)',
+                callback_data: 'taxiSouth'
+            }
+        ],
+        [
+            {
+                text: '🚖  Двигаемся по городу (Север)',
+                callback_data: 'taxiNorth'
+            }
+        ],
+        [
+            {
+                text: '🚕  Заказываем такси онлайн',
+                callback_data: 'taxiOnline'
             }
         ]
     ]
@@ -27,7 +39,7 @@ export function getChoiceMenu(choiseOption) {
             return [
                 [
                     {
-                        text: '🎥  Открыть последний ссыль на зеркало',
+                        text: '🎥  Открыть последний ссыль',
                         callback_data: 'checkLastReply'
                     }
                 ],
@@ -39,7 +51,7 @@ export function getChoiceMenu(choiseOption) {
                 ],
                 [
                     {
-                        text: '🔖  Отправить жалобу в техподдержку',
+                        text: '🔖  Ссыль не обновляется (репорт)',
                         callback_data: 'createTicket'
                     }
                 ],
@@ -54,7 +66,7 @@ export function getChoiceMenu(choiseOption) {
             return [
                 [
                     {
-                        text: '🎥  Открыть последний ссыль на зеркало',
+                        text: '🎥  Открыть последний ссыль',
                         callback_data: 'checkLastReply'
                     }
                 ],
@@ -66,7 +78,7 @@ export function getChoiceMenu(choiseOption) {
                 ],
                 [
                     {
-                        text: '🔖  Отправить жалобу в техподдержку',
+                        text: '🔖  Ссыль не обновляется (репорт)',
                         callback_data: 'createTicket'
                     }
                 ],
@@ -195,6 +207,82 @@ export function getTaxiMenuSouth() {
             {
                 text: '🏎  Человек Смита -Втакси-',
                 callback_data: 'tel:+79022725373|человеку Смита'
+            }
+        ],
+        [
+            {
+                text: '<-- Вернуться в главное меню',
+                callback_data: 'mainMenu'
+            }
+        ]
+    ]
+}
+
+export function getTaxiMenuNorth() {
+    return [
+        [
+            {
+                text: '🚖  Вояж (север)',
+                callback_data: 'tel:83435053335|Вояж (север)'
+            }
+        ],
+        [
+            {
+                text: '🚖  Люкс (север)',
+                callback_data: 'tel:89122206607|Люкс (север)'
+            }
+        ],
+        [
+            {
+                text: '🚖  Регион (север)',
+                callback_data: 'tel:89002036253|Регион (север)'
+            }
+        ],
+        [
+            {
+                text: '🚖  Штурман (север)',
+                callback_data: 'tel:83435031220|Штурман (север)'
+            }
+        ],
+        [
+            {
+                text: '🏎  Человек Смита -Втакси-',
+                callback_data: 'tel:+79022725373|человеку Смита'
+            }
+        ],
+        [
+            {
+                text: '<-- Вернуться в главное меню',
+                callback_data: 'mainMenu'
+            }
+        ]
+    ]
+}
+
+export function getTaxiMenuOnline() {
+    return [
+        [
+            {
+                text: '🚕  Заказ онлайн (tg)',
+                callback_data: 'link:https://t.me/polevskoy_taxi'
+            }
+        ],
+        [
+            {
+                text: '🚕  Заказ онлайн 2 (tg)',
+                callback_data: 'link:https://t.me/Polevskoy_Tax'
+            }
+        ],
+        [
+            {
+                text: '🚕  Заказ онлайн 3 (vk)',
+                callback_data: 'link:https://vk.me/join/z45V6aO7t4YiRArHfW7SiRWgr6RDeE_LTG4='
+            }
+        ],
+        [
+            {
+                text: '<-- Вернуться в главное меню',
+                callback_data: 'mainMenu'
             }
         ]
     ]

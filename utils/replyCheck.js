@@ -8,6 +8,7 @@ import {
     hdrezkaEmail
 } from '../config/config.js';
 import { sendEmail } from './sendEmail.js';
+import { keyboardForOpeningBot } from './helpers.js';
 
 let recipientEmail = '';
 
@@ -62,8 +63,10 @@ const getLastEmailFromSender = (imap, callback) => {
 };
 
 // Функция проверки ответного письма
-export function replyCheck (chatId, mirrorType ) {
-    
+export async function replyCheck(query, mirrorType) {
+    const chatId = query.message.chat.id;
+    const loadingMessage = await bot.sendMessage(chatId, 'Загрузка...');
+
     if (mirrorType === 'kinoland') {
         recipientEmail = kinolandEmail;
     }
@@ -71,7 +74,7 @@ export function replyCheck (chatId, mirrorType ) {
     if (mirrorType === 'hdrezka') {
         recipientEmail = hdrezkaEmail;
     }
-    
+
     const imap = new Imap({
         user: senderEmail,
         password: senderPassword,
@@ -80,10 +83,15 @@ export function replyCheck (chatId, mirrorType ) {
         tls: true
     });
 
-    imap.once('ready', () => {
-        getLastEmailFromSender(imap, (emailText) => {
+    imap.once('ready', async () => {
+        getLastEmailFromSender(imap, async (emailText) => {
+            bot.deleteMessage(chatId, loadingMessage.message_id);
             let value = extractPersonalLink(emailText, mirrorType);
-            bot.sendMessage(chatId, `Последний ссыль на ${mirrorType}: ${value}`);
+            await bot.sendMessage(
+                chatId,
+                `Последний ссыль на ${mirrorType}: ${value}`,
+                keyboardForOpeningBot
+            );
         });
     });
 

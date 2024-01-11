@@ -1,6 +1,6 @@
 {
-  "name": "makatels-films-bot",
-  "version": "1.0.0",
+  "name": "makatels-bot",
+  "version": "1.1.0",
   "description": "special telegram bot for makatels-team",
   "main": "main.js",
   "type": "module",
@@ -10,7 +10,7 @@
   },
   "engines": { "node": "16.x" },
   "keywords": [],
-  "author": "",
+  "author": "mspolermo",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",

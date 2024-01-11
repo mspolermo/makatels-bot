@@ -1,5 +1,12 @@
 import { bot } from './utils/getBot.js';
-import { getMainMenu, getChoiceMenu, getTaxiMenu } from './utils/getMenu.js';
+import {
+    getMainMenu,
+    getChoiceMenu,
+    getTaxiMenu,
+    getTaxiMenuSouth,
+    getTaxiMenuNorth,
+    getTaxiMenuOnline
+} from './utils/getMenu.js';
 import { sendEmail } from './utils/sendEmail.js';
 import { replyCheck } from './utils/replyCheck.js';
 
@@ -21,10 +28,31 @@ const taxiMenuData = {
     }
 };
 
+const taxiSouthMenuData = {
+    caption: 'Полевские такси (юг):',
+    reply_markup: {
+        inline_keyboard: getTaxiMenuSouth()
+    }
+};
+
+const taxiNorthMenuData = {
+    caption: 'Полевские такси (север):',
+    reply_markup: {
+        inline_keyboard: getTaxiMenuNorth()
+    }
+};
+
+const taxiOnlineMenuData = {
+    caption: 'Заказать такси онлайн:',
+    reply_markup: {
+        inline_keyboard: getTaxiMenuOnline()
+    }
+};
+
 const getFilmsMirrorMenuData = (site, chatId) => {
     state[chatId] = { mirrorType: site };
     return {
-        caption: `Оке, вот ${site}, че дальше:`,
+        caption: `Оке, вот ${site.toUpperCase()}, че дальше:`,
         reply_markup: {
             inline_keyboard: getChoiceMenu(site)
         }
@@ -54,20 +82,29 @@ bot.on('callback_query', async (query) => {
         case 'hdrezka': // Смотрим кинчик на HDREZKA
             await bot.sendPhoto(chatId, `./static/${query.data}.jpeg`, { ...choiceMenuData, chat_id: chatId });
             break;
-        case 'taxi': // Двигаемся по городу
+        case 'taxi': // Заказываем такси (old)
             await bot.sendPhoto(chatId, './static/taxi.jpeg', { ...taxiMenuData, chat_id: chatId });
+            break;
+        case 'taxiOnline': // Заказываем такси онлайн
+            await bot.sendPhoto(chatId, './static/taxi.jpeg', { ...taxiOnlineMenuData, chat_id: chatId });
+            break;
+        case 'taxiSouth': // Двигаемся по городу (юг)
+            await bot.sendPhoto(chatId, './static/taxi.jpeg', { ...taxiSouthMenuData, chat_id: chatId });
+            break;
+        case 'taxiNorth': // Двигаемся по городу (север)
+            await bot.sendPhoto(chatId, './static/taxi.jpeg', { ...taxiNorthMenuData, chat_id: chatId });
             break;
 
         // В меню действия с зеркалами кинчиков:
-        case 'checkLastReply': // Открыть последний ссыль на зеркало
-            replyCheck(chatId, mirrorType);
+        case 'checkLastReply': // Открыть последний ссыль
+            replyCheck(query, mirrorType);
             break;
         case 'sendReq': // Обновить ссыль на зеркало
             sendEmail('mirror', mirrorType);
             bot.sendMessage(chatId, 'Запрос отправлен. Подожди несколько минут и попробуй проверить последнюю ссылку. Если она не обновится в течение 15 минут, отправь жалобу в техподдержку');
             setTimeout(() => bot.sendPhoto(chatId, './static/M.jpg', { ...mainMenuData, chat_id: chatId }), 2000);
             break;
-        case 'createTicket': // Отправить жалобу в техподдержку
+        case 'createTicket': // Ссыль не обновляется
             sendEmail('ticket', mirrorType);
             bot.sendMessage(chatId, 'Разработчикам отправлен отчет о проблемах с обновлением ссылки');
             setTimeout(() => bot.sendPhoto(chatId, './static/M.jpg', { ...mainMenuData, chat_id: chatId }), 2000);
