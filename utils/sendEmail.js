@@ -8,7 +8,6 @@ import {
     hdrezkaSupportMail,
     creatorEmail
 } from '../config/config.js';
-import { getMixedString } from './getMixedString.js';
 
 const askDictionary = {
     mirror: {
@@ -33,8 +32,8 @@ export async function sendEmail(type, mirrorType) {
 
     switch(type) {
         case 'ticket' :
-            subject = getMixedString (askDictionary.ticket.subject);
-            text = getMixedString (askDictionary.ticket.text);
+            subject = askDictionary.ticket.subject;
+            text = askDictionary.ticket.text;
             if (mirrorType === 'kinoland') {
                 recipientEmail = kinolandSupportMail;
             }
@@ -43,8 +42,8 @@ export async function sendEmail(type, mirrorType) {
             }
             break;
         case 'mirror':
-            subject = getMixedString (askDictionary.mirror.subject);
-            text = getMixedString (askDictionary.mirror.text);
+            subject = askDictionary.mirror.subject;
+            text = askDictionary.mirror.text;
             if (mirrorType === 'kinoland') {
                 recipientEmail = kinolandEmail;
             }

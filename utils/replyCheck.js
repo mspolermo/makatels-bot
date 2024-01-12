@@ -85,7 +85,14 @@ export async function replyCheck(query, mirrorType) {
 
     imap.once('ready', async () => {
         getLastEmailFromSender(imap, async (emailText) => {
-            bot.deleteMessage(chatId, loadingMessage.message_id);
+            //bot.deleteMessage(chatId, loadingMessage.message_id);
+            try {
+                // Удаляем текущее сообщение
+                await bot.deleteMessage(chatId, loadingMessage.message_id);
+            } catch (error) {
+                console.error('Ошибка при удалении сообщения:', error.message);
+                // Здесь можно предпринять дополнительные шаги при возникновении ошибки, если необходимо
+            }
             let value = extractPersonalLink(emailText, mirrorType);
             await bot.sendMessage(
                 chatId,

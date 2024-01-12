@@ -11,7 +11,7 @@ import { sendEmail } from './utils/sendEmail.js';
 import { replyCheck } from './utils/replyCheck.js';
 
 // Объект для хранения значения mirrorType
-const state = {};
+let state = {};
 
 // Получение клавиатур для меню
 const mainMenuData = {
@@ -69,7 +69,14 @@ bot.on('callback_query', async (query) => {
     const chatId = query.message.chat.id;
 
     // Удаляем текущее сообщение
-    await bot.deleteMessage(chatId, query.message.message_id);
+    //await bot.deleteMessage(chatId, query.message.message_id);
+    try {
+        // Удаляем текущее сообщение
+        await bot.deleteMessage(chatId, query.message.message_id);
+    } catch (error) {
+        console.error('Ошибка при удалении сообщения:', error.message);
+        // Здесь можно предпринять дополнительные шаги при возникновении ошибки, если необходимо
+    }
 
     const mirrorType = state[chatId] ? state[chatId].mirrorType : '';
     const choiceMenuData = getFilmsMirrorMenuData(query.data, chatId);
@@ -77,22 +84,22 @@ bot.on('callback_query', async (query) => {
     switch (query.data) {
         // В главном меню:
         case 'kinoland': // Смотрим кинчик на KINOLAND
-            await bot.sendPhoto(chatId, `./static/${query.data}.jpeg`, { ...choiceMenuData, chat_id: chatId });
+            await bot.sendPhoto(chatId, `./static/${query.data}.jpg`, { ...choiceMenuData, chat_id: chatId });
             break;
         case 'hdrezka': // Смотрим кинчик на HDREZKA
-            await bot.sendPhoto(chatId, `./static/${query.data}.jpeg`, { ...choiceMenuData, chat_id: chatId });
+            await bot.sendPhoto(chatId, `./static/${query.data}.jpg`, { ...choiceMenuData, chat_id: chatId });
             break;
         case 'taxi': // Заказываем такси (old)
-            await bot.sendPhoto(chatId, './static/taxi.jpeg', { ...taxiMenuData, chat_id: chatId });
+            await bot.sendPhoto(chatId, './static/taxi.jpg', { ...taxiMenuData, chat_id: chatId });
             break;
         case 'taxiOnline': // Заказываем такси онлайн
-            await bot.sendPhoto(chatId, './static/taxi.jpeg', { ...taxiOnlineMenuData, chat_id: chatId });
+            await bot.sendPhoto(chatId, './static/taxi.jpg', { ...taxiOnlineMenuData, chat_id: chatId });
             break;
         case 'taxiSouth': // Двигаемся по городу (юг)
-            await bot.sendPhoto(chatId, './static/taxi.jpeg', { ...taxiSouthMenuData, chat_id: chatId });
+            await bot.sendPhoto(chatId, './static/south.jpg', { ...taxiSouthMenuData, chat_id: chatId });
             break;
         case 'taxiNorth': // Двигаемся по городу (север)
-            await bot.sendPhoto(chatId, './static/taxi.jpeg', { ...taxiNorthMenuData, chat_id: chatId });
+            await bot.sendPhoto(chatId, './static/taxi.jpg', { ...taxiNorthMenuData, chat_id: chatId });
             break;
 
         // В меню действия с зеркалами кинчиков:
@@ -121,7 +128,7 @@ bot.on('callback_query', async (query) => {
                 const phoneNumber = taxiData[0].replace('tel:', '');
                 const taxiName = taxiData[1];
                 bot.sendMessage(chatId, `Набирай ${taxiName}, брат: ${phoneNumber}`,);
-                setTimeout(() => bot.sendPhoto(chatId, './static/taxi.jpeg', { ...taxiMenuData, chat_id: chatId }), 3000);
+                setTimeout(() => bot.sendPhoto(chatId, './static/taxi.jpg', { ...taxiMenuData, chat_id: chatId }), 3000);
             }
 
             // Обработка для открытия группы в Telegram
