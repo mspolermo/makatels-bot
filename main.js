@@ -2,7 +2,6 @@ import { bot } from './utils/getBot.js';
 import {
     getMainMenu,
     getChoiceMenu,
-    getTaxiMenu,
     getTaxiMenuSouth,
     getTaxiMenuNorth,
     getTaxiMenuOnline
@@ -21,33 +20,28 @@ const mainMenuData = {
     }
 };
 
-const taxiMenuData = {
-    caption: 'Полевские такси:',
-    reply_markup: {
-        inline_keyboard: getTaxiMenu()
+const getTaxiMenuData = (taxiType) => {
+    let desc = 'Заказать такси онлайн:';
+    let keyboard = getTaxiMenuOnline();
+    switch (taxiType) {
+        case 'south':
+            desc = 'Полевские такси (юг):';
+            keyboard = getTaxiMenuSouth();
+            break;
+        case 'north':
+            desc = 'Полевские такси (север):';
+            keyboard = getTaxiMenuNorth();
+            break;
+        default:
+            break;
     }
-};
-
-const taxiSouthMenuData = {
-    caption: 'Полевские такси (юг):',
-    reply_markup: {
-        inline_keyboard: getTaxiMenuSouth()
+    return {
+        caption: desc,
+        reply_markup: {
+            inline_keyboard: keyboard
+        }
     }
-};
-
-const taxiNorthMenuData = {
-    caption: 'Полевские такси (север):',
-    reply_markup: {
-        inline_keyboard: getTaxiMenuNorth()
-    }
-};
-
-const taxiOnlineMenuData = {
-    caption: 'Заказать такси онлайн:',
-    reply_markup: {
-        inline_keyboard: getTaxiMenuOnline()
-    }
-};
+}
 
 const getFilmsMirrorMenuData = (site, chatId) => {
     state[chatId] = { mirrorType: site };
@@ -89,17 +83,14 @@ bot.on('callback_query', async (query) => {
         case 'hdrezka': // Смотрим кинчик на HDREZKA
             await bot.sendPhoto(chatId, `./static/${query.data}.jpg`, { ...choiceMenuData, chat_id: chatId });
             break;
-        case 'taxi': // Заказываем такси (old)
-            await bot.sendPhoto(chatId, './static/taxi.jpg', { ...taxiMenuData, chat_id: chatId });
-            break;
         case 'taxiOnline': // Заказываем такси онлайн
-            await bot.sendPhoto(chatId, './static/taxi.jpg', { ...taxiOnlineMenuData, chat_id: chatId });
+            await bot.sendPhoto(chatId, './static/taxi.jpg', { ...(getTaxiMenuData('online')), chat_id: chatId });
             break;
         case 'taxiSouth': // Двигаемся по городу (юг)
-            await bot.sendPhoto(chatId, './static/south.jpg', { ...taxiSouthMenuData, chat_id: chatId });
+            await bot.sendPhoto(chatId, './static/south.jpg', { ...(getTaxiMenuData('south')), chat_id: chatId });
             break;
         case 'taxiNorth': // Двигаемся по городу (север)
-            await bot.sendPhoto(chatId, './static/taxi.jpg', { ...taxiNorthMenuData, chat_id: chatId });
+            await bot.sendPhoto(chatId, './static/north.jpg', { ...(getTaxiMenuData('north')), chat_id: chatId });
             break;
 
         // В меню действия с зеркалами кинчиков:
@@ -108,7 +99,7 @@ bot.on('callback_query', async (query) => {
             break;
         case 'sendReq': // Обновить ссыль на зеркало
             sendEmail('mirror', mirrorType);
-            bot.sendMessage(chatId, 'Запрос отправлен. Подожди несколько минут и попробуй проверить последнюю ссылку. Если она не обновится в течение 15 минут, отправь жалобу в техподдержку');
+            bot.sendMessage(chatId, 'Запрос отправлен. Подожди несколько минут и попробуй проверить последнюю ссылку. Если она не обновится в течение 15 минут, создай репорт');
             setTimeout(() => bot.sendPhoto(chatId, './static/M.jpg', { ...mainMenuData, chat_id: chatId }), 2000);
             break;
         case 'createTicket': // Ссыль не обновляется
@@ -128,7 +119,14 @@ bot.on('callback_query', async (query) => {
                 const phoneNumber = taxiData[0].replace('tel:', '');
                 const taxiName = taxiData[1];
                 bot.sendMessage(chatId, `Набирай ${taxiName}, брат: ${phoneNumber}`,);
-                setTimeout(() => bot.sendPhoto(chatId, './static/taxi.jpg', { ...taxiMenuData, chat_id: chatId }), 3000);
+                if (taxiName.includes('юг')) {
+                    setTimeout(() => bot.sendPhoto(chatId, './static/south.jpg', { ...(getTaxiMenuData('south')), chat_id: chatId }), 3000);
+                } else if (taxiName.includes('север')) {
+                    setTimeout(() => bot.sendPhoto(chatId, './static/north.jpg', { ...(getTaxiMenuData('north')), chat_id: chatId }), 3000);
+                } else {
+                    setTimeout(() => bot.sendPhoto(chatId, './static/taxi.jpg', { ...(getTaxiMenuData('online')), chat_id: chatId }), 3000);
+                }
+                
             }
 
             // Обработка для открытия группы в Telegram
