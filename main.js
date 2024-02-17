@@ -95,16 +95,16 @@ bot.on('callback_query', async (query) => {
 
         // В меню действия с зеркалами кинчиков:
         case 'checkLastReply': // Открыть последний ссыль
-            replyCheck(query, mirrorType);
+            await replyCheck(query, mirrorType);
             break;
         case 'sendReq': // Обновить ссыль на зеркало
-            sendEmail('mirror', mirrorType);
-            bot.sendMessage(chatId, 'Запрос отправлен. Подожди несколько минут и попробуй проверить последнюю ссылку. Если она не обновится в течение 15 минут, создай репорт');
+            await sendEmail('mirror', mirrorType);
+            await bot.sendMessage(chatId, 'Запрос отправлен. Подожди несколько минут и попробуй проверить последнюю ссылку. Если она не обновится в течение 15 минут, создай репорт');
             setTimeout(() => bot.sendPhoto(chatId, './static/M.jpg', { ...mainMenuData, chat_id: chatId }), 2000);
             break;
         case 'createTicket': // Ссыль не обновляется
-            sendEmail('ticket', mirrorType);
-            bot.sendMessage(chatId, 'Разработчикам отправлен отчет о проблемах с обновлением ссылки');
+            await sendEmail('ticket', mirrorType);
+            await bot.sendMessage(chatId, 'Разработчикам отправлен отчет о проблемах с обновлением ссылки');
             setTimeout(() => bot.sendPhoto(chatId, './static/M.jpg', { ...mainMenuData, chat_id: chatId }), 2000);
             break;
 
@@ -118,7 +118,7 @@ bot.on('callback_query', async (query) => {
                 const taxiData = query.data.split('|');
                 const phoneNumber = taxiData[0].replace('tel:', '');
                 const taxiName = taxiData[1];
-                bot.sendMessage(chatId, `Набирай ${taxiName}, брат: ${phoneNumber}`,);
+                await bot.sendMessage(chatId, `Набирай ${taxiName}, брат: ${phoneNumber}`,);
                 if (taxiName.includes('юг')) {
                     setTimeout(() => bot.sendPhoto(chatId, './static/south.jpg', { ...(getTaxiMenuData('south')), chat_id: chatId }), 3000);
                 } else if (taxiName.includes('север')) {
@@ -132,7 +132,7 @@ bot.on('callback_query', async (query) => {
             // Обработка для открытия группы в Telegram
             if (query.data.startsWith('link:')) {
                 const groupLink = query.data.replace('link:', '');
-                bot.sendMessage(chatId, `Линк на группу: ${groupLink}`);
+                await bot.sendMessage(chatId, `Линк на группу: ${groupLink}`);
             }
             break;
     }
