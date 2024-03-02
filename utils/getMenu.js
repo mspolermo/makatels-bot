@@ -1,4 +1,29 @@
+// Клавиатуры
+
 export function getMainMenu() {
+    return [
+        [
+            {
+                text: '🎬  Видео',
+                callback_data: 'movies'
+            }
+        ],
+        [
+            {
+                text: '🚕 Такси',
+                callback_data: 'taxi'
+            }
+        ],
+        [
+            {
+                text: 'Дополнительно',
+                callback_data: 'additional'
+            }
+        ]
+    ]
+}
+
+export function getVideoMenu() {
     return [
         [
             {
@@ -14,26 +39,14 @@ export function getMainMenu() {
         ],
         [
             {
-                text: '🚖  Двигаемся по городу (Юг)',
-                callback_data: 'taxiSouth'
-            }
-        ],
-        [
-            {
-                text: '🚖  Двигаемся по городу (Север)',
-                callback_data: 'taxiNorth'
-            }
-        ],
-        [
-            {
-                text: '🚕  Заказываем такси онлайн',
-                callback_data: 'taxiOnline'
+                text: '<-- Вернуться в главное меню',
+                callback_data: 'mainMenu'
             }
         ]
     ]
 }
 
-export function getChoiceMenu(choiseOption) {
+export function getVideoChoiceMenu(choiseOption) {
     switch (choiseOption) {
         case 'kinoland':
             return [
@@ -53,6 +66,12 @@ export function getChoiceMenu(choiseOption) {
                     {
                         text: '🔖  Ссыль не обновляется (репорт)',
                         callback_data: 'createTicket'
+                    }
+                ],
+                [
+                    {
+                        text: '<- К предыдущему меню',
+                        callback_data: 'movies'
                     }
                 ],
                 [
@@ -84,6 +103,12 @@ export function getChoiceMenu(choiseOption) {
                 ],
                 [
                     {
+                        text: '<- К предыдущему меню',
+                        callback_data: 'movies'
+                    }
+                ],
+                [
+                    {
                         text: '<-- Вернуться в главное меню',
                         callback_data: 'mainMenu'
                     }
@@ -94,6 +119,34 @@ export function getChoiceMenu(choiseOption) {
     }
 }
 
+export function getGeneralTaxiMenu() {
+    return [
+        [
+            {
+                text: '🚖  Двигаемся по городу (Юг)',
+                callback_data: 'taxiSouth'
+            }
+        ],
+        [
+            {
+                text: '🚖  Двигаемся по городу (Север)',
+                callback_data: 'taxiNorth'
+            }
+        ],
+        [
+            {
+                text: '🚕  Заказываем такси онлайн',
+                callback_data: 'taxiOnline'
+            }
+        ],
+        [
+            {
+                text: '<-- Вернуться в главное меню',
+                callback_data: 'mainMenu'
+            }
+        ]
+    ]
+}
 
 export function getTaxiMenuSouth() {
     return [
@@ -125,6 +178,12 @@ export function getTaxiMenuSouth() {
             {
                 text: '🏎  Человек Смита -Втакси-',
                 callback_data: 'tel:+79022725373|человеку Смита'
+            }
+        ],
+        [
+            {
+                text: '<- К предыдущему меню',
+                callback_data: 'taxi'
             }
         ],
         [
@@ -170,6 +229,12 @@ export function getTaxiMenuNorth() {
         ],
         [
             {
+                text: '<- К предыдущему меню',
+                callback_data: 'taxi'
+            }
+        ],
+        [
+            {
                 text: '<-- Вернуться в главное меню',
                 callback_data: 'mainMenu'
             }
@@ -195,6 +260,47 @@ export function getTaxiMenuOnline() {
             {
                 text: '🚕  Заказ онлайн 3 (vk)',
                 callback_data: 'link:https://vk.me/join/z45V6aO7t4YiRArHfW7SiRWgr6RDeE_LTG4='
+            }
+        ],
+        [
+            {
+                text: '<- К предыдущему меню',
+                callback_data: 'taxi'
+            }
+        ],
+        [
+            {
+                text: '<-- Вернуться в главное меню',
+                callback_data: 'mainMenu'
+            }
+        ]
+    ]
+}
+
+export function getAdditionalMenu() {
+    return [
+        [
+            {
+                text: 'Расписание автобусов (Полевской-Екб)',
+                callback_data: 'kinoland'
+            }
+        ],
+        [
+            {
+                text: 'Расписание автобусов (Екб-Полевской)',
+                callback_data: 'hdrezka'
+            }
+        ],
+        [
+            {
+                text: 'Отправить предложение по развитию',
+                callback_data: 'taxiSouth'
+            }
+        ],
+        [
+            {
+                text: 'Отправить жалобу на работу бота',
+                callback_data: 'taxiNorth'
             }
         ],
         [
