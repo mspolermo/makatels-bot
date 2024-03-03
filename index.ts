@@ -34,7 +34,7 @@ bot.on('message', async (msg) => {
         await sendEmail('feedback', undefined, messageText);
         await botStateManager.clearWaitingForFeedback(chatId);
         await bot.sendMessage(chatId, 'Спасибо! Фидбэк отправлен разработчику');
-        setTimeout(() => bot.sendPhoto(chatId, './public/M.jpg', initialMessage), 2000);
+        setTimeout(() => bot.sendPhoto(chatId, './public/init.jpg', initialMessage), 2000);
     } else {
         await bot.sendPhoto(chatId, './public/init.jpg', initialMessage);
     }
@@ -87,12 +87,12 @@ bot.on('callback_query', async (query) => {
         case 'sendReq': // Обновить ссыль на зеркало
             await sendEmail('mirror', mirrorType);
             await bot.sendMessage(chatId, 'Запрос отправлен. Подожди несколько минут и попробуй проверить последнюю ссылку. Если она не обновится в течение 15 минут, создай репорт');
-            setTimeout(() => bot.sendPhoto(chatId, './public/M.jpg', initialMessage), 2000);
+            setTimeout(() => bot.sendPhoto(chatId, './public/init.jpg', initialMessage), 2000);
             break;
         case 'createTicket': // Ссыль не обновляется
             await sendEmail('ticket', mirrorType);
             await bot.sendMessage(chatId, 'Разработчикам отправлен отчет о проблемах с обновлением ссылки');
-            setTimeout(() => bot.sendPhoto(chatId, './public/M.jpg', initialMessage), 2000);
+            setTimeout(() => bot.sendPhoto(chatId, './public/init.jpg', initialMessage), 2000);
             break;
         // В меню такси:
         case 'taxiOnline': // Заказываем такси онлайн
@@ -137,7 +137,7 @@ bot.on('callback_query', async (query) => {
             break;
         // Другие
         case 'mainMenu': // Возврат в главное меню
-            await bot.sendPhoto(chatId, './public/M.jpg', initialMessage);
+            await bot.sendPhoto(chatId, './public/init.jpg', initialMessage);
             break;
         default:
             // Обработка для номера такси
