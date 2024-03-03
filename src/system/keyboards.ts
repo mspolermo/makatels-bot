@@ -1,6 +1,8 @@
-// Клавиатуры
+import { moviesMirrorType } from "../types/types";
 
-export function getMainMenu() {
+// Клавиатуры для ответа боту
+
+export function getMainMenuKB() {
     return [
         [
             {
@@ -23,7 +25,7 @@ export function getMainMenu() {
     ]
 }
 
-export function getVideoMenu() {
+export function getVideoMenuKB() {
     return [
         [
             {
@@ -46,7 +48,7 @@ export function getVideoMenu() {
     ]
 }
 
-export function getVideoChoiceMenu(choiseOption) {
+export function getVideoChoiceMenuKB(choiseOption: moviesMirrorType) {
     switch (choiseOption) {
         case 'kinoland':
             return [
@@ -119,7 +121,7 @@ export function getVideoChoiceMenu(choiseOption) {
     }
 }
 
-export function getGeneralTaxiMenu() {
+export function getGeneralTaxiMenuKB() {
     return [
         [
             {
@@ -148,7 +150,7 @@ export function getGeneralTaxiMenu() {
     ]
 }
 
-export function getTaxiMenuSouth() {
+export function getTaxiMenuSouthKB() {
     return [
         [
             {
@@ -195,7 +197,7 @@ export function getTaxiMenuSouth() {
     ]
 }
 
-export function getTaxiMenuNorth() {
+export function getTaxiMenuNorthKB() {
     return [
         [
             {
@@ -242,7 +244,7 @@ export function getTaxiMenuNorth() {
     ]
 }
 
-export function getTaxiMenuOnline() {
+export function getTaxiMenuOnlineKB() {
     return [
         [
             {
@@ -277,7 +279,7 @@ export function getTaxiMenuOnline() {
     ]
 }
 
-export function getAdditionalMenu() {
+export function getAdditionalMenuKB() {
     return [
         [
             {
@@ -310,4 +312,15 @@ export function getAdditionalMenu() {
             }
         ]
     ]
+}
+
+// Клавиатура с кнопкой для открытия бота
+
+export const keyboardForOpeningBot = {
+    reply_markup: {
+        keyboard: [
+            [{ text: 'Открыть бота Макателей' }],
+        ],
+        resize_keyboard: true,
+    }
 }

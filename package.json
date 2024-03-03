@@ -1,12 +1,12 @@
 {
   "name": "makatels-bot",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "special telegram bot for makatels-team",
   "main": "main.js",
-  "type": "module",
   "scripts": {
-    "start": "node ./index.js",
-    "dev": "nodemon index.js"
+    "start": "node ./dist/index.js",
+    "dev": "nodemon index.ts",
+    "build": "tsc"
   },
   "engines": {
     "node": "16.x"
@@ -25,6 +25,13 @@
     "nodemailer": "^6.9.4"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "@types/mailparser": "^3.4.4",
+    "@types/node": "^20.11.24",
+    "@types/node-imap": "^0.9.3",
+    "@types/node-telegram-bot-api": "^0.64.3",
+    "@types/nodemailer": "^6.4.14",
+    "nodemon": "^3.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
   }
 }

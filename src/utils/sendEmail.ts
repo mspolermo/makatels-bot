@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import { emailType, moviesMirrorType } from '../types/types';
 import {
     senderEmail,
     senderPassword,
@@ -7,7 +8,7 @@ import {
     hdrezkaEmail,
     hdrezkaSupportMail,
     creatorEmail
-} from '../config/config.js';
+} from '../config/config';
 
 const askDictionary = {
     mirror: {
@@ -26,7 +27,7 @@ const askDictionary = {
 }
 
 // Функция отправки письма
-export async function sendEmail(type, mirrorType, textBody) {
+export async function sendEmail(type: emailType, mirrorType?: moviesMirrorType, textBody?: string) {
     let subject = '';
     let text = (textBody) ? textBody : '';
     let recipientEmail = '';

@@ -1,7 +1,22 @@
 import axios from 'axios';
 import cheerio from 'cheerio';
+import { busDirectionType } from '../types/types';
 
-async function getHTML(url) {
+const BUS_TABLE_URL = 'http://polevskoybus.ru/index/120_122_145_raspisanie/0-194';
+
+// Функция получения расписания автобусов
+export async function getBusTable(direction: busDirectionType) {
+    try {
+        const html = await getHTML(BUS_TABLE_URL);
+        return await parseBusTable(html, direction);
+    } catch (error) {
+        console.error('Произошла ошибка при получении расписания автобусов:', error);
+        throw error;
+    }
+};
+
+// Функция получения HTML-разметки сайта с расписанием автобусов
+async function getHTML(url: string) {
     try {
         const response = await axios.get(url);
         if (response.status !== 200) {
@@ -9,14 +24,16 @@ async function getHTML(url) {
         }
         return response.data;
     } catch (error) {
-        console.log('Ошибка при получении HTML разметки:', error.message);
+        console.log('Ошибка при получении HTML разметки:', (error as Error ).message);
         return '';
     }
-}
+};
 
-async function parseBusTable(html, direction) {
+// Функция переработки HTML-разметки в расписание автобусов
+async function parseBusTable(html: string, direction: busDirectionType) {
     const $ = cheerio.load(html);
     const buses = [`Информация актуальна ${$('div.block.rasp.r_for').text().trim()}`];
+
     if (direction == 'directly') {
         $('tr').each((index, element) => {
                 const columns = $(element).find('td');
@@ -36,7 +53,8 @@ async function parseBusTable(html, direction) {
                 }
             
         });
-    }
+    };
+
     if (direction == 'inverted') {
         $('tr').each((index, element) => {
             const columns = $(element).find('td');
@@ -52,18 +70,7 @@ async function parseBusTable(html, direction) {
             buses.push(`${timeStart}. Екб - ${finalCity}(${busNumber}, ${days})`)
         
         });
-    }
+    };
 
     return buses.join('\n\n');
-}
-
-export async function getBusTable(direction) {
-    const url = 'http://polevskoybus.ru/index/120_122_145_raspisanie/0-194';
-    try {
-        const html = await getHTML(url);
-        return await parseBusTable(html, direction);
-    } catch (error) {
-        console.error('Произошла ошибка при получении расписания автобусов:', error);
-        throw error;
-    }
-}
+};
