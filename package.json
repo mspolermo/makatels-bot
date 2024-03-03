@@ -5,14 +5,18 @@
   "main": "main.js",
   "type": "module",
   "scripts": {
-    "start": "node ./main.js",
-    "dev": "nodemon main.js"
+    "start": "node ./index.js",
+    "dev": "nodemon index.js"
   },
-  "engines": { "node": "16.x" },
+  "engines": {
+    "node": "16.x"
+  },
   "keywords": [],
   "author": "mspolermo",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.6.7",
+    "cheerio": "^1.0.0-rc.12",
     "cors": "^2.8.5",
     "json-server": "^0.17.4",
     "mailparser": "^3.6.5",

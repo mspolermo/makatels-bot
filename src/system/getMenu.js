@@ -16,7 +16,7 @@ export function getMainMenu() {
         ],
         [
             {
-                text: 'Дополнительно',
+                text: '📰  Другое',
                 callback_data: 'additional'
             }
         ]
@@ -27,13 +27,13 @@ export function getVideoMenu() {
     return [
         [
             {
-                text: '🎬  Смотрим кинчик на KINOLAND',
+                text: '🎬  KINOLAND',
                 callback_data: 'kinoland'
             }
         ],
         [
             {
-                text: '🎬  Смотрим кинчик на HDREZKA',
+                text: '🎬  HDREZKA',
                 callback_data: 'hdrezka'
             }
         ],
@@ -281,26 +281,26 @@ export function getAdditionalMenu() {
     return [
         [
             {
-                text: 'Расписание автобусов (Полевской-Екб)',
-                callback_data: 'kinoland'
+                text: '🚍 Расписание автобусов в Екб',
+                callback_data: 'bus'
             }
         ],
         [
             {
-                text: 'Расписание автобусов (Екб-Полевской)',
-                callback_data: 'hdrezka'
+                text: '🚌 Расписание автобусов из Екб',
+                callback_data: 'busInverted'
             }
         ],
         [
             {
-                text: 'Отправить предложение по развитию',
-                callback_data: 'taxiSouth'
+                text: '🗳️ Предложить функционал',
+                callback_data: 'suggest'
             }
         ],
         [
             {
-                text: 'Отправить жалобу на работу бота',
-                callback_data: 'taxiNorth'
+                text: '📬 Пожаловаться на работу бота',
+                callback_data: 'report'
             }
         ],
         [

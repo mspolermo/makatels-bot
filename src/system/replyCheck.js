@@ -1,3 +1,5 @@
+// noinspection JSIgnoredPromiseFromCall
+
 import Imap from 'node-imap';
 import { simpleParser } from 'mailparser';
 import { bot } from './getBot.js';
@@ -37,8 +39,11 @@ function extractPersonalLink(emailText, mirrorType) {
 const getLastEmailFromSender = (imap, callback) => {
     imap.openBox('INBOX', false, () => {
         const searchCriteria = [['FROM', recipientEmail]];
-        imap.search(searchCriteria, (err, results) => {
-            if (err) throw err;
+        imap.search(searchCriteria, async (err, results) => {
+            if (err) {
+                await sendEmail('feedback', '', `Произошла ошибка во время проверки (запрос на получение в replyCheck) последнего письма от отправителя`);
+                throw err;
+            }
 
             if (results.length > 0) {
                 const lastSeqno = results[results.length - 1]; // Получаем последний элемент (последнее письмо)
@@ -85,13 +90,13 @@ export async function replyCheck(query, mirrorType) {
 
     imap.once('ready', async () => {
         getLastEmailFromSender(imap, async (emailText) => {
-            //bot.deleteMessage(chatId, loadingMessage.message_id);
+
             try {
                 // Удаляем текущее сообщение
                 await bot.deleteMessage(chatId, loadingMessage.message_id);
             } catch (error) {
                 console.error('Ошибка при удалении сообщения:', error.message);
-                // Здесь можно предпринять дополнительные шаги при возникновении ошибки, если необходимо
+                await sendEmail('feedback', '', `Произошла ошибка при стандартном удалении собщений ботом: ${error.message}`);
             }
             let value = extractPersonalLink(emailText, mirrorType);
             await bot.sendMessage(
@@ -103,4 +108,4 @@ export async function replyCheck(query, mirrorType) {
     });
 
     imap.connect();
-};
+}

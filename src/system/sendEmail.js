@@ -22,12 +22,13 @@ const askDictionary = {
         subject: 'Бот не робит',
         text: 'Бот норм не извлекает ссылку, надо чекнуть'
     },
+    feedback: 'Отзыв о работе бота МАКАТЕЛИ'
 }
 
 // Функция отправки письма
-export async function sendEmail(type, mirrorType) {
+export async function sendEmail(type, mirrorType, textBody) {
     let subject = '';
-    let text = '';
+    let text = (textBody) ? textBody : '';
     let recipientEmail = '';
 
     switch(type) {
@@ -54,6 +55,10 @@ export async function sendEmail(type, mirrorType) {
         case 'error': 
             subject = askDictionary.error.subject;
             text = askDictionary.error.text;
+            recipientEmail = creatorEmail;
+            break;
+        case 'feedback': 
+            subject = askDictionary.feedback
             recipientEmail = creatorEmail;
             break;
         default:
@@ -85,4 +90,4 @@ export async function sendEmail(type, mirrorType) {
         }
     });
 
-};
+}
