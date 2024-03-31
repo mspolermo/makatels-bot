@@ -1,9 +1,16 @@
+import { frontendLink } from "../config/config";
 import { moviesMirrorType } from "../types/types";
 
 // Клавиатуры для ответа боту
 
 export function getMainMenuKB() {
     return [
+        [
+            {
+                text: '🚍 ФРОНТЕНД 🚍',
+                web_app: {url: frontendLink}
+            }
+        ],
         [
             {
                 text: '🎬  Видео',
