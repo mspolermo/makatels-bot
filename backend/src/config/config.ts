@@ -11,4 +11,4 @@ export const kinolandSupportMail = 'support@kinoland.club';
 export const hdrezkaEmail = 'mirror@hdrezka.org';
 export const hdrezkaSupportMail = 'support@hdrezka.org';
 
-export const frontendLink = 'https://624f-139-59-253-110.ngrok-free.app';
+export const frontendLink = 'https://d8f0-94-140-148-193.ngrok-free.app';
