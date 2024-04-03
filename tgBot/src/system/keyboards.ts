@@ -8,7 +8,9 @@ export function getMainMenuKB() {
         [
             {
                 text: '🚍 ФРОНТЕНД 🚍',
-                web_app: {url: frontendLink}
+                web_app: {
+                    url: frontendLink
+                }
             }
         ],
         [

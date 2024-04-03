@@ -1,8 +1,11 @@
+import { GetBusTable } from "@/features/getBusTable";
+
 const MainPage = () => {
 
     return (
         <div>
-            Главная страница
+            <p>Главная страница</p>
+            <GetBusTable />
         </div>
     );
 };
