@@ -14,4 +14,7 @@ export default defineConfig({
       { find: '@', replacement: __dirname + '/src' },
     ],
   },
+    define: {
+        __HTML_PARSER_API__: JSON.stringify('https://html-parser-tau.vercel.app/'),
+    },
 })

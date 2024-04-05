@@ -1,20 +1,15 @@
 import { useEffect, useState } from "react";
-import { fetchData } from "../api/fetchBusTableHTML/fetchBusTable";
+import { fetchData } from "../model/services/fetchBusTableHTML/fetchBusTable";
+import { parseBusSchedule } from "../lib/parseBusSchedule";
 
 export const GetBusTable = () => {
     const [busTable, setBusTable] = useState('');
 
     useEffect(() => {
-        const fetchDataAndSetState = async () => {
-            try {
-                const data = await fetchData();
-                setBusTable(data);
-            } catch (error) {
-                console.error('Произошла ошибка при получении данных:', error);
-            }
-        };
-
-        fetchDataAndSetState();
+        fetchData().then(
+            data => setBusTable(parseBusSchedule(data, 'directly')),
+            error => {throw new Error(error)}
+        )
     }, []);
 
     return (

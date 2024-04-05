@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "@types/mailparser": "^3.4.4",
-    "@types/node": "^20.11.24",
+    "@types/node": "^20.12.4",
     "@types/node-imap": "^0.9.3",
     "@types/node-telegram-bot-api": "^0.64.3",
     "@types/nodemailer": "^6.4.14",
