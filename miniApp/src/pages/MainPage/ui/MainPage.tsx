@@ -1,11 +1,11 @@
-import { GetBusTable } from "@/features/getBusTable";
+import { GetBusSchedule } from "@/features/getBusSchedule";
 
 const MainPage = () => {
 
     return (
         <div>
             <p>Главная страница</p>
-            <GetBusTable />
+            <GetBusSchedule direction="toPolevskoy" />
         </div>
     );
 };
