@@ -16,8 +16,7 @@ function App() {
   return (
     <div>
       <Header />
-      <h1>MAKATELS BOT</h1>
-      <Button onClick={onToggleButton}>toggle</Button>
+      {/* <Button onClick={onToggleButton}>toggle</Button> */}
       <AppRouter />
     </div>
   );

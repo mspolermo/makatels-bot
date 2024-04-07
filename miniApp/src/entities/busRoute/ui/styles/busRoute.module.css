@@ -1,4 +1,72 @@
 .busRoute {
-    display: flex;
+    display: grid;
+    grid-template-columns: 0.6fr 1fr;
     gap: 10px;
+    background-color: var(--tg-theme-section-bg-color);
+    border: 1px solid var(--tg-theme-secondary-bg-color);
+    border-radius: 10px;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 8px;
+}
+
+.routeBlock {
+   padding: 6px;
+   text-align: center;
+}
+
+.busNumber {
+    color: var(--tg-theme-accent-text-color);
+    font-size: 24px;
+}
+
+.routeName {
+    color: var(--tg-theme-hint-color);
+    font-size: 14px;
+}
+
+.routeDays {
+    color: var(--tg-theme-hint-color);
+    font-size: 10px;
+    padding-top: 2px;
+}
+
+.routeDays::first-letter {
+    text-transform: uppercase;
+}
+
+.textBlock {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: var(--tg-theme-subtitle-text-color);
+}
+
+.startTime {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: 12px;
+    text-align: center;
+}
+
+.time {
+    color: var(--tg-theme-accent-text-color);
+    font-size: 16px;
+}
+
+.finishTme {
+    margin-top: 4px;
+    padding-top: 4px;
+    color: var(--tg-theme-hint-color);
+    border-top: 1px solid var(--tg-theme-hint-color);
+    font-size: 12px;
+    text-align: center;
+}
+
+.arrival {
+    padding-bottom: 2px;
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchHTML } from "../model/services/fetchHTML/fetchHTML";
 import { parseBusSchedule } from "../lib/parseBusSchedule";
-import { BusRouteToEkb, BusRouteToPolevskoy, busDirectionType } from "@/entities/busRoute";
+import { BusRoute, busDirectionType } from "@/entities/busRoute";
 import { busScheduleType } from "../model/types/types";
 
 interface GetBusScheduleProps {
@@ -18,21 +18,10 @@ export const GetBusSchedule = (props: GetBusScheduleProps) => {
             error => {throw new Error(error)}
         )
     }, []);
-console.log(busTable)
+
     return (
-        <div>
-            <p>Таблица автобусов</p>
-            {busTable?.map(el => {
-                if (el.busDirection == 'toEkb') {
-                    return (
-                        <BusRouteToEkb route={el} />
-                )}
-                if (el.busDirection == 'toPolevskoy') {
-                    return (
-                        <BusRouteToPolevskoy route={el} />
-                    )
-                }
-            })}
+        <div style={{display: 'flex', flexDirection: 'column', gap: 10}}>
+            {busTable?.map(el => <BusRoute route={el}/>)}
         </div>
     );
 };
