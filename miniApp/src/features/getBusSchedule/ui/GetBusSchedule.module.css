@@ -1,0 +1,22 @@
+.GetBuSchedule {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.filtersPanel {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 10px;
+}
+
+.Tab {
+    border-radius: 16px;
+}
+
+.filtersHeading {
+    color: var(--tg-theme-section-header-text-color);
+    font-size: 18px;
+    font-weight: 600;
+}

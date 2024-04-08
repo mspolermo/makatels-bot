@@ -4,7 +4,6 @@ const MainPage = () => {
 
     return (
         <div>
-            <p>Главная страница</p>
             <GetBusSchedule direction="toPolevskoy" />
         </div>
     );
