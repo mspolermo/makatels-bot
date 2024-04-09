@@ -3,6 +3,7 @@ import cheerio from 'cheerio';
 import { busRouteToEkbType, busRouteToPolevskoyType } from '@/entities/busRoute/model/types/types';
 import { busScheduleType } from '../model/types/types';
 
+//Функция переработки HTML разметки сайта в массив объектов расписания автобусов
 
 export function parseBusSchedule(html: string, direction: busDirectionType) {
     const $ = cheerio.load(html);

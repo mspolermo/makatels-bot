@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { fetchHTML } from "../model/services/fetchHTML/fetchHTML";
 import { parseBusSchedule } from "../lib/parseBusSchedule";
 import { BusRoute, busDirectionType } from "@/entities/busRoute";
-import { busScheduleType } from "../model/types/types";
+import { busScheduleType, mainBtnType } from "../model/types/types";
 import Button from "@/shared/ui/Button/Button";
 import cls from './GetBusSchedule.module.css';
 import { useTelegram } from "@/shared/lib/hooks/useTelegram";
+import { getNearestRoutes } from "../lib/getNearestRoutes";
 
 interface GetBusScheduleProps {
     direction: busDirectionType
@@ -14,28 +15,27 @@ interface GetBusScheduleProps {
 export const GetBusSchedule = (props: GetBusScheduleProps) => {
     const { direction } = props;
     const { tg, onToggleButton } = useTelegram();
-    const [busSchedule, setBusSchedule] = useState<busScheduleType>();
 
+    const [busSchedule, setBusSchedule] = useState<busScheduleType>();
     const [filtredSchedule, setFiltredSchedule] = useState<busScheduleType>();
 
+    const [mainBtn, setMainBtn] = useState<mainBtnType> ('Показать ближайшие')
+
     tg.MainButton.setParams({
-        text: 'Показать ближайшие'
+        text: mainBtn
     })
 
     tg.MainButton.onClick(
         () => {
-            let currentTime = new Date();
-            setFiltredSchedule(busSchedule?.filter(el => {
-                if (
-                    el.busDirection === 'toPolevskoy' && 
-                    ( Number(el.startTime.split(':')[0]) >= currentTime.getHours()) &&
-                    ( Number(el.startTime.split(':')[0]) <= currentTime.getHours()+ 2)) 
-                    {
-                   return el
-                }
-            }))
-
-            
+            switch (mainBtn) {
+                case 'Показать ближайшие':
+                    if (busSchedule) setFiltredSchedule(getNearestRoutes(busSchedule));
+                    setMainBtn('Показать все');
+                    break;
+                case 'Показать все':
+                    setFiltredSchedule(busSchedule);
+                    setMainBtn('Показать ближайшие')
+            }
         }
     )
 
