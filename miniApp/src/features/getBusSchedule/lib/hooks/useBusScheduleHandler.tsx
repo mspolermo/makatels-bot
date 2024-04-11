@@ -16,18 +16,22 @@ export const useBusScheduleHandler = (direction: busDirectionType) => {
     useEffect(() => {
         () => onToggleButton();
 
+        return (
+            () => onToggleButton()
+        )
+    }, []);
+
+    useEffect(() => {
         fetchHTML().then(
             data => {
                 const parsedSchedule = parseBusSchedule(data, direction);
                 setBusSchedule(parsedSchedule);
                 setFiltredSchedule(parsedSchedule);
+                setMainBtn('Показать ближайшие');
             },
             error => {throw new Error(error)}
         )
-        return (
-            () => onToggleButton()
-        )
-    }, []);
+    }, [direction]);
 
     // Главная кнопка (нижняя)
     tg.MainButton.setParams({

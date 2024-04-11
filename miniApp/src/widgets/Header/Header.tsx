@@ -1,5 +1,5 @@
-import Button from "../Button/Button";
-import { useTelegram } from "../../lib/hooks/useTelegram";
+import Button from "../../shared/ui/Button/Button";
+import { useTelegram } from "../../shared/lib/hooks/useTelegram";
 import "./Header.css";
 
 const Header = () => {

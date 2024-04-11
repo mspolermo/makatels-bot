@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import "./styles/index.css";
-import Header from "../shared/ui/Header/Header";
+import Header from "../widgets/Header/Header";
 import { useTelegram } from "@/shared/lib/hooks/useTelegram";
 import Button from "@/shared/ui/Button/Button";
 import { AppRouter } from "./providers/router";
@@ -12,7 +12,7 @@ function App() {
     tg.ready();
   }, []);
 
-  console.log(tg)
+  console.log(tg);
   return (
     <div>
       <Header />

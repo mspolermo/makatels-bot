@@ -27,7 +27,7 @@ export const GetBusSchedule = ({ direction } : GetBusScheduleProps) => {
             activeStatus: activeStatus === 'north',
             onClick: () => filterHandler('north')
         }
-    ], [activeStatus,filterHandler])
+    ], [activeStatus, filterHandler])
 
     return (
         <div className={cls.GetBuSchedule}>
@@ -35,7 +35,7 @@ export const GetBusSchedule = ({ direction } : GetBusScheduleProps) => {
                 title="Фильтр:"
                 tabs={tabsArray}
             />
-            {filtredSchedule?.map(el => <BusRoute route={el}/>)}
+            {filtredSchedule?.map( (el, i) => <BusRoute key={el.busNumber + i} route={el}/>)}
         </div>
     );
 };

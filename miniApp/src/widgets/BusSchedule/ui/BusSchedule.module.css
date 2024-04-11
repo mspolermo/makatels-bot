@@ -1,0 +1,15 @@
+.BusSchedule {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.heading {
+    text-align: center;
+    color: var(--tg-theme-text-color);
+}
+
+.filtres {
+    padding: 20px 0;
+    border: 1px solid var(--tg-theme-hint-color);
+}
