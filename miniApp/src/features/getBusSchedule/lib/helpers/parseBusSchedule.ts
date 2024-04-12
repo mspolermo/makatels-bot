@@ -1,7 +1,8 @@
-import { busDirectionType } from '@/entities/busRoute';
 import cheerio from 'cheerio';
-import { busRouteToEkbType, busRouteToPolevskoyType } from '@/entities/busRoute/model/types/types';
-import { busScheduleType } from '../model/types/types';
+
+import { busDirectionType, busRouteToEkbType, busRouteToPolevskoyType } from '@/entities/busRoute';
+
+import { busScheduleType } from '../../model/types/types';
 
 //Функция переработки HTML разметки сайта в массив объектов расписания автобусов
 

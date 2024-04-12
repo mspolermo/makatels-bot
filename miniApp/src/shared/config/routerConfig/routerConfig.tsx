@@ -1,4 +1,3 @@
-
 import { MainPage } from '@/pages/MainPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 import { type RouteProps } from 'react-router-dom';

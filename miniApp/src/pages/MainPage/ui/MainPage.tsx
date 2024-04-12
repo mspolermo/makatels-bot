@@ -1,4 +1,3 @@
-import { GetBusSchedule } from "@/features/getBusSchedule";
 import { BusSchedule } from "@/widgets/BusSchedule";
 
 const MainPage = () => {

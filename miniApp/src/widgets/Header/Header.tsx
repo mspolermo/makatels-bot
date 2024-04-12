@@ -1,14 +1,15 @@
 import Button from "../../shared/ui/Button/Button";
 import { useTelegram } from "../../shared/lib/hooks/useTelegram";
-import "./Header.css";
+import cls from './Header.module.css';
 
 const Header = () => {
   const { user, onClose } = useTelegram();
 
   return (
-    <div className={"header "}>
-      <Button onClick={onClose}>Закрыть</Button>
-      <span className={"username "}>{user?.username}</span>
+    <div className={cls.header}>
+      <span className={cls.username}>{user?.username}</span>
+      <Button onClick={onClose} className={cls.btn}>Закрыть</Button>
+      
     </div>
   );
 };

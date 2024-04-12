@@ -25,7 +25,7 @@ export const BusSchedule = () => {
     return (
         <div className={cls.BusSchedule}>
             <h2 className={cls.heading}>Расписание автобусов</h2>
-            <Filter title="Напрвление:" tabs={tabsArray} className={cls.filtres}/>
+            <Filter title="" tabs={tabsArray} className={cls.filtres}/>
             <GetBusSchedule direction={direction}/>
         </div>
     );

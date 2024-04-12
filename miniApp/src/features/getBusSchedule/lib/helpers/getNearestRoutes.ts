@@ -1,4 +1,4 @@
-import { busScheduleType } from "../model/types/types";
+import { busScheduleType } from "../../model/types/types";
 
 // функция возвращает ближайшие маршруты (и в Екб и в Полевской), ближайшеее время регулируется
 

@@ -12,4 +12,9 @@
 .filtres {
     padding: 20px 0;
     border: 1px solid var(--tg-theme-hint-color);
+    justify-content: space-around;
+}
+
+.filtres h2 {
+    display: none;
 }
