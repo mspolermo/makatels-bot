@@ -11,4 +11,4 @@ export const kinolandSupportMail = 'support@kinoland.club';
 export const hdrezkaEmail = 'mirror@hdrezka.org';
 export const hdrezkaSupportMail = 'support@hdrezka.org';
 
-export const frontendLink = 'https://c75c-94-140-149-111.ngrok-free.app';
+export const frontendLink = 'https://makatels.netlify.app';
