@@ -10,7 +10,7 @@ export function parseBusSchedule(html: string, direction: busDirectionType) {
     const $ = cheerio.load(html);
     const busScheduleArray: busScheduleType = [];
 
-    $('tr').each((index, element) => {
+    $('tr').each((_, element) => {
 
         const columns = $(element).find('td');
         const startCell = $(columns[0]).text().trim();
