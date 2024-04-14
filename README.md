@@ -11,11 +11,11 @@
 
 ### html-parser
 
-Сервер (эндпойнт) с паррсингом расписания автобусов
+Сервер с парсингом расписания автобусов - [end-point](/html-parser/README.md)
 
 ### miniApp
 
-Фронтенд "Расписание автобусов" [miniApp](/miniApp/README.md)
+Фронтенд "Расписание автобусов" - [miniApp](/miniApp/README.md)
 
 ### tgBot
 

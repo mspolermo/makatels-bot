@@ -7,14 +7,6 @@ export function getMainMenuKB() {
     return [
         [
             {
-                text: '🚍 ФРОНТЕНД 🚍',
-                web_app: {
-                    url: frontendLink
-                }
-            }
-        ],
-        [
-            {
                 text: '🎬  Видео',
                 callback_data: 'movies'
             }
@@ -264,7 +256,7 @@ export function getTaxiMenuOnlineKB() {
         [
             {
                 text: '🚕  Заказ онлайн 2 (tg)',
-                callback_data: 'link:https://t.me/Polevskoy_Tax'
+                callback_data: 'link:https://t.me/polevskoytaxi'
             }
         ],
         [
@@ -292,14 +284,10 @@ export function getAdditionalMenuKB() {
     return [
         [
             {
-                text: '🚍 Расписание автобусов в Екб',
-                callback_data: 'bus'
-            }
-        ],
-        [
-            {
-                text: '🚌 Расписание автобусов из Екб',
-                callback_data: 'busInverted'
+                text: '🚍 Расписание автобусов 🚍',
+                web_app: {
+                    url: frontendLink
+                }
             }
         ],
         [

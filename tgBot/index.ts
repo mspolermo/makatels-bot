@@ -2,7 +2,6 @@ import { bot }  from './src/system/settings/botInit';
 import { BotStateManager } from './src/system/settings/botStateManager';
 import { sendEmail } from './src/utils/sendEmail';
 import { checkReply } from './src/utils/checkReply';
-import { getBusTable } from './src/utils/getBusTable';
 import {
     initialMessage,
     getFilmsGeneralMenuAnswer,
@@ -105,28 +104,6 @@ bot.on('callback_query', async (query) => {
             await bot.sendPhoto(chatId, './public/north.jpg', { ...(getTaxiTypeMenuAnswer('north')) });
             break;
         // В меню дополнительно
-        case 'bus': // Расписание автобусов в Екб'
-            try {
-                const answer = await getBusTable('directly');
-                await bot.sendMessage(chatId, `${answer}`);
-            } catch (error) {
-                const errorMessage = (error as Error).message;
-                console.error('Ошибка при получении расписания автобусов:', errorMessage);
-                await sendEmail('feedback', undefined, `Произошла ошибка при загрузке расписания автобусов: ${errorMessage}`);
-                await bot.sendMessage(chatId, 'Произошла ошибка при получении расписания автобусов. Попробуйте позже.');
-            }
-            break;
-        case 'busInverted': // Расписание автобусов из Екб'
-            try {
-                const answer = await getBusTable('inverted');
-                await bot.sendMessage(chatId, `${answer}`);
-            } catch (error) {
-                const errorMessage = (error as Error).message;
-                console.error('Ошибка при получении расписания автобусов:', errorMessage);
-                await sendEmail('feedback', undefined, `Произошла ошибка при загрузке расписания автобусов: ${errorMessage}`);
-                await bot.sendMessage(chatId, 'Произошла ошибка при получении расписания автобусов. Попробуйте позже.');
-            }
-            break;
         case 'suggest': // Предложить функционал
             botStateManager.setWaitingForFeedback(chatId);
             await bot.sendMessage(chatId, 'Напишите в ответном сообщении функционал, который бы вы хотели видеть в этом боте');

@@ -12,16 +12,14 @@ import {
 } from "../../model/types/types";
 
 export const useBusScheduleHandler = (direction: busDirectionType) => {
-  const { tg, onToggleButton } = useTelegram();
+  const { tg } = useTelegram();
   const [busSchedule, setBusSchedule] = useState<busScheduleType>();
   const [filtredSchedule, setFiltredSchedule] = useState<busScheduleType>();
   const [activeStatus, setActiveStatus] = useState<filtresType>("all");
   const [mainBtn, setMainBtn] = useState<mainBtnType>("Показать ближайшие");
 
   useEffect(() => {
-    () => onToggleButton();
-
-    return () => onToggleButton();
+    tg.MainButton.show();
   }, []);
 
   useEffect(() => {
