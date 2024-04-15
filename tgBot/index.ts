@@ -11,6 +11,7 @@ import {
     getAdditionalMenuAnswer
 } from './src/system/answers';
 import { moviesMirrorType } from './src/types/types';
+import { frontendLink } from './src/config/config';
 
 // Отправка фидбека на почту в случае краша приложения
 process.on('uncaughtException', async (error) => {
@@ -24,6 +25,13 @@ process.on('unhandledRejection', async (reason) => {
 
 const botStateManager = new BotStateManager();
 
+bot.setMyCommands([
+    {command: '/start', description: 'Открыть главное меню'},
+    {command: '/kinoland', description: 'Последняя сслыка на kinoland'},
+    {command: '/hdrezka', description: 'Последняя сслыка на hdrezka'},
+    {command: '/buses', description: 'Открыть расписание автобусов'}
+])
+
 // Обработка текстовых сообщений юзера
 bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
@@ -34,6 +42,19 @@ bot.on('message', async (msg) => {
         await botStateManager.clearWaitingForFeedback(chatId);
         await bot.sendMessage(chatId, 'Спасибо! Фидбэк отправлен разработчику');
         setTimeout(() => bot.sendPhoto(chatId, './public/init.jpg', initialMessage), 2000);
+    } else if (messageText === '/kinoland' ) {
+        await checkReply(chatId, 'kinoland');
+    } else if (messageText === '/hdrezka' ) {
+        await checkReply(chatId, 'hdrezka');
+    } else if (messageText === '/buses' ) {
+        await bot.sendMessage(chatId, 'Ссылка на форму расписания автобусов', {
+            reply_markup: {
+                inline_keyboard: [[{
+                    text: '🚍 Расписание автобусов 🚍',
+                    web_app: { url: frontendLink }
+                }]]
+            }
+        });
     } else {
         await bot.sendPhoto(chatId, './public/init.jpg', initialMessage);
     }
@@ -81,7 +102,7 @@ bot.on('callback_query', async (query) => {
             break;
         // В меню действия с зеркалами кинчиков:
         case 'checkLastReply': // Открыть последний ссыль
-            await checkReply(query, mirrorType);
+            await checkReply(chatId, mirrorType);
             break;
         case 'sendReq': // Обновить ссыль на зеркало
             await sendEmail('mirror', mirrorType);

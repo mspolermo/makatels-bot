@@ -15,19 +15,13 @@ import {
 let RECIPENT_EMAIL = '';
 
 // Функция проверки ответного письма
-export async function checkReply(query: CallbackQuery | undefined , mirrorType?: moviesMirrorType) {
-    
-    if (!query || !query.message) {
-        console.error('Некорректный запрос query для replyCheck');
-        return;
-    }
+export async function checkReply(chatId: number, mirrorType?: moviesMirrorType) {
 
     if (!mirrorType) {
         console.error('mirrorType == undefiend в функции replyCheck');
         return;
     }
 
-    const chatId = query.message.chat.id;
     const loadingMessage = await bot.sendMessage(chatId, 'Загрузка...');
 
     if (mirrorType === 'kinoland') {
