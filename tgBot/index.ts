@@ -3,15 +3,25 @@ import { BotStateManager } from './src/system/settings/botStateManager';
 import { sendEmail } from './src/utils/sendEmail';
 import { checkReply } from './src/utils/checkReply';
 import {
-    initialMessage,
-    getFilmsGeneralMenuAnswer,
+    // initialMessage,
+    // getFilmsGeneralMenuAnswer,
     getFilmsMirrorMenuAnswer,
-    getTaxiGeneralMenuAnswer,
+    // getTaxiGeneralMenuAnswer,
     getTaxiTypeMenuAnswer,
-    getAdditionalMenuAnswer
+    // getAdditionalMenuAnswer
 } from './src/system/answers';
 import { moviesMirrorType } from './src/types/types';
 import { frontendLink } from './src/config/config';
+import { AdditionalMenuResponse, FilmsGeneralMenuResponse, FilmsMirrorMenuResponse, InitialMessageResponse, TaxiGeneralMenuResponse, TaxiTypeMenuResponse } from './src/migration/answers';
+
+const initialMessage = (new InitialMessageResponse()).getResponse()
+const getFilmsGeneralMenuAnswer = (new FilmsGeneralMenuResponse()).getResponse()
+// const getFilmsMirrorMenuAnswer = (new FilmsMirrorMenuResponse()).getResponse()
+const getTaxiGeneralMenuAnswer =  (new TaxiGeneralMenuResponse()).getResponse()
+// const getTaxiTypeMenuAnswer =  (new TaxiTypeMenuResponse()).getResponse()
+const getAdditionalMenuAnswer = (new AdditionalMenuResponse()).getResponse()
+
+
 
 // Отправка фидбека на почту в случае краша приложения
 process.on('uncaughtException', async (error) => {
@@ -81,13 +91,13 @@ bot.on('callback_query', async (query) => {
     switch (query.data) {
         //В главном меню:
         case 'movies': // Видео
-            await bot.sendPhoto(chatId, `./public/videoService.jpg`, getFilmsGeneralMenuAnswer());
+            await bot.sendPhoto(chatId, `./public/videoService.jpg`, getFilmsGeneralMenuAnswer);
             break;
         case 'taxi': // Такси
-            await bot.sendPhoto(chatId, `./public/taxiGeneral.jpg`, getTaxiGeneralMenuAnswer());
+            await bot.sendPhoto(chatId, `./public/taxiGeneral.jpg`, getTaxiGeneralMenuAnswer);
             break;
         case 'additional': // Другое
-            await bot.sendPhoto(chatId, `./public/logo.jpg`, getAdditionalMenuAnswer());
+            await bot.sendPhoto(chatId, `./public/logo.jpg`, getAdditionalMenuAnswer);
             break;
         // В меню фильмов:
         case 'kinoland': // KINOLAND
