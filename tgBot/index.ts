@@ -5,9 +5,9 @@ import { checkReply } from './src/utils/checkReply';
 import {
     // initialMessage,
     // getFilmsGeneralMenuAnswer,
-    getFilmsMirrorMenuAnswer,
+    //getFilmsMirrorMenuAnswer,
     // getTaxiGeneralMenuAnswer,
-    getTaxiTypeMenuAnswer,
+    //getTaxiTypeMenuAnswer,
     // getAdditionalMenuAnswer
 } from './src/system/answers';
 import { moviesMirrorType } from './src/types/types';
@@ -16,9 +16,7 @@ import { AdditionalMenuResponse, FilmsGeneralMenuResponse, FilmsMirrorMenuRespon
 
 const initialMessage = (new InitialMessageResponse()).getResponse()
 const getFilmsGeneralMenuAnswer = (new FilmsGeneralMenuResponse()).getResponse()
-// const getFilmsMirrorMenuAnswer = (new FilmsMirrorMenuResponse()).getResponse()
 const getTaxiGeneralMenuAnswer =  (new TaxiGeneralMenuResponse()).getResponse()
-// const getTaxiTypeMenuAnswer =  (new TaxiTypeMenuResponse()).getResponse()
 const getAdditionalMenuAnswer = (new AdditionalMenuResponse()).getResponse()
 
 
@@ -85,7 +83,9 @@ bot.on('callback_query', async (query) => {
     }
 
     const mirrorType = botStateManager.getMirrorType(chatId);
-    const choiceMenuData = getFilmsMirrorMenuAnswer(query.data as moviesMirrorType, chatId, botStateManager.setMirrorType.bind(botStateManager));
+    const choiceMenuData = (new FilmsMirrorMenuResponse(query.data as moviesMirrorType, chatId, botStateManager.setMirrorType.bind(botStateManager))).getResponse()
+
+    //const choiceMenuData = getFilmsMirrorMenuAnswer(query.data as moviesMirrorType, chatId, botStateManager.setMirrorType.bind(botStateManager));
 
     
     switch (query.data) {
@@ -126,13 +126,13 @@ bot.on('callback_query', async (query) => {
             break;
         // В меню такси:
         case 'taxiOnline': // Заказываем такси онлайн
-            await bot.sendPhoto(chatId, './public/taxi.jpg', { ...(getTaxiTypeMenuAnswer('online')) });
+            await bot.sendPhoto(chatId, './public/taxi.jpg', { ...(new TaxiTypeMenuResponse('online')).getResponse() });
             break;
         case 'taxiSouth': // Двигаемся по городу (юг)
-            await bot.sendPhoto(chatId, './public/south.jpg', { ...(getTaxiTypeMenuAnswer('south'))});
+            await bot.sendPhoto(chatId, './public/south.jpg', { ...(new TaxiTypeMenuResponse('south')).getResponse()});
             break;
         case 'taxiNorth': // Двигаемся по городу (север)
-            await bot.sendPhoto(chatId, './public/north.jpg', { ...(getTaxiTypeMenuAnswer('north')) });
+            await bot.sendPhoto(chatId, './public/north.jpg', { ...(new TaxiTypeMenuResponse('north')).getResponse() });
             break;
         // В меню дополнительно
         case 'suggest': // Предложить функционал
@@ -155,11 +155,11 @@ bot.on('callback_query', async (query) => {
                 const taxiName = taxiData[1];
                 await bot.sendMessage(chatId, `Набирай ${taxiName}, брат: ${phoneNumber}`);
                 if (taxiName.includes('юг')) {
-                    setTimeout(() => bot.sendPhoto(chatId, './public/south.jpg', { ...(getTaxiTypeMenuAnswer('south'))}), 3000);
+                    setTimeout(() => bot.sendPhoto(chatId, './public/south.jpg', { ...(new TaxiTypeMenuResponse('south')).getResponse()}), 3000);
                 } else if (taxiName.includes('север')) {
-                    setTimeout(() => bot.sendPhoto(chatId, './public/north.jpg', { ...(getTaxiTypeMenuAnswer('north')) }), 3000);
+                    setTimeout(() => bot.sendPhoto(chatId, './public/north.jpg', { ...(new TaxiTypeMenuResponse('north')).getResponse() }), 3000);
                 } else {
-                    setTimeout(() => bot.sendPhoto(chatId, './public/taxi.jpg', { ...(getTaxiTypeMenuAnswer('online')) }), 3000);
+                    setTimeout(() => bot.sendPhoto(chatId, './public/taxi.jpg', { ...(new TaxiTypeMenuResponse('online')).getResponse() }), 3000);
                 }
             }
             // Обработка для открытия группы в Telegram

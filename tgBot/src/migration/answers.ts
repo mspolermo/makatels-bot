@@ -62,7 +62,12 @@ class FilmsGeneralMenuResponse extends BotResponse {
 }
 
 class FilmsMirrorMenuResponse extends BotResponse {
-    constructor(private site: moviesMirrorType, private chatId: number, private setFunction: Function) {
+
+    constructor( 
+        private site: moviesMirrorType, 
+        private chatId: number, 
+        private setFunction: Function
+    ) {
         super(`${site.toUpperCase()}:`, new VideoChoiceMenuKeyboard(site));
         this.setFunction(site, chatId);
     }
