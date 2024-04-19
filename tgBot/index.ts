@@ -1,18 +1,10 @@
 import { bot }  from './src/system/settings/botInit';
 import { BotStateManager } from './src/system/settings/botStateManager';
-import { sendEmail } from './src/utils/sendEmail';
-import { checkReply } from './src/utils/checkReply';
-import {
-    // initialMessage,
-    // getFilmsGeneralMenuAnswer,
-    //getFilmsMirrorMenuAnswer,
-    // getTaxiGeneralMenuAnswer,
-    //getTaxiTypeMenuAnswer,
-    // getAdditionalMenuAnswer
-} from './src/system/answers';
 import { moviesMirrorType } from './src/types/types';
 import { frontendLink } from './src/config/config';
 import { AdditionalMenuResponse, FilmsGeneralMenuResponse, FilmsMirrorMenuResponse, InitialMessageResponse, TaxiGeneralMenuResponse, TaxiTypeMenuResponse } from './src/migration/answers';
+import { ReplyChecker } from './src/migration/replyChecker';
+import { EmailSender } from './src/migration/emailSender';
 
 const initialMessage = (new InitialMessageResponse()).getResponse()
 const getFilmsGeneralMenuAnswer = (new FilmsGeneralMenuResponse()).getResponse()
@@ -24,11 +16,11 @@ const getAdditionalMenuAnswer = (new AdditionalMenuResponse()).getResponse()
 // Отправка фидбека на почту в случае краша приложения
 process.on('uncaughtException', async (error) => {
     console.error('Необработанное исключение:', error);
-    await sendEmail('feedback', undefined, `Произошел краш приложения: ${error.message}`);
+    await (new EmailSender).sendEmail('feedback', undefined, `Произошел краш приложения: ${error.message}`);
 });
 process.on('unhandledRejection', async (reason) => {
     console.error('Необработанный Promise rejection:', reason);
-    await sendEmail('feedback', undefined, `Произошел краш приложения: ${reason}`);
+    await (new EmailSender).sendEmail('feedback', undefined, `Произошел краш приложения: ${reason}`);
 });
 
 const botStateManager = new BotStateManager();
@@ -46,14 +38,14 @@ bot.on('message', async (msg) => {
     const messageText = msg.text;
 
     if (botStateManager.isWaitingForFeedback(chatId)) {
-        await sendEmail('feedback', undefined, messageText);
+        await (new EmailSender).sendEmail('feedback', undefined, messageText);
         await botStateManager.clearWaitingForFeedback(chatId);
         await bot.sendMessage(chatId, 'Спасибо! Фидбэк отправлен разработчику');
         setTimeout(() => bot.sendPhoto(chatId, './public/init.jpg', initialMessage), 2000);
     } else if (messageText === '/kinoland' ) {
-        await checkReply(chatId, 'kinoland');
+        await (new ReplyChecker(chatId, 'kinoland')).checkReply();
     } else if (messageText === '/hdrezka' ) {
-        await checkReply(chatId, 'hdrezka');
+        await (new ReplyChecker(chatId, 'hdrezka')).checkReply();
     } else if (messageText === '/buses' ) {
         await bot.sendMessage(chatId, 'Ссылка на форму расписания автобусов', {
             reply_markup: {
@@ -79,7 +71,7 @@ bot.on('callback_query', async (query) => {
     } catch (error) {
         const errorMessage = (error as Error).message;
         console.error('Ошибка при удалении сообщения:', errorMessage);
-        await sendEmail('feedback', undefined, `Произошла ошибка при стандартном удалении собщений ботом: ${errorMessage}`);
+        await (new EmailSender).sendEmail('feedback', undefined, `Произошла ошибка при стандартном удалении собщений ботом: ${errorMessage}`);
     }
 
     const mirrorType = botStateManager.getMirrorType(chatId);
@@ -112,15 +104,15 @@ bot.on('callback_query', async (query) => {
             break;
         // В меню действия с зеркалами кинчиков:
         case 'checkLastReply': // Открыть последний ссыль
-            await checkReply(chatId, mirrorType);
+            await (new ReplyChecker(chatId, mirrorType)).checkReply();
             break;
         case 'sendReq': // Обновить ссыль на зеркало
-            await sendEmail('mirror', mirrorType);
+            await (new EmailSender).sendEmail('mirror', mirrorType);
             await bot.sendMessage(chatId, 'Запрос отправлен. Подожди несколько минут и попробуй проверить последнюю ссылку. Если она не обновится в течение 15 минут, создай репорт');
             setTimeout(() => bot.sendPhoto(chatId, './public/init.jpg', initialMessage), 2000);
             break;
         case 'createTicket': // Ссыль не обновляется
-            await sendEmail('ticket', mirrorType);
+            await (new EmailSender).sendEmail('ticket', mirrorType);
             await bot.sendMessage(chatId, 'Разработчикам отправлен отчет о проблемах с обновлением ссылки');
             setTimeout(() => bot.sendPhoto(chatId, './public/init.jpg', initialMessage), 2000);
             break;
