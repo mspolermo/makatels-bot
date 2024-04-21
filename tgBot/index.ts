@@ -1,164 +1,176 @@
-import { bot }  from './src/system/settings/botInit';
-import { BotStateManager } from './src/system/settings/botStateManager';
-import { moviesMirrorType } from './src/types/types';
-import { frontendLink } from './src/config/config';
-import { AdditionalMenuResponse, FilmsGeneralMenuResponse, FilmsMirrorMenuResponse, InitialMessageResponse, TaxiGeneralMenuResponse, TaxiTypeMenuResponse } from './src/migration/answers';
-import { ReplyChecker } from './src/migration/replyChecker';
-import { EmailSender } from './src/migration/emailSender';
+
+import { frontendLink, telegramToken } from './src/config/config';
+import {
+    AdditionalMenuResponse,
+    FilmsGeneralMenuResponse,
+    FilmsMirrorMenuResponse,
+    InitialMessageResponse,
+    TaxiGeneralMenuResponse,
+    TaxiTypeMenuResponse
+} from './src/core/services/Response/Response';
+import { ReplyChecker } from './src/infrastructure/replyChecker/replyChecker';
+import { EmailSender } from './src/infrastructure/emailSender/emailSender';
+import TelegramBot from 'node-telegram-bot-api';
+import { BotStateManager } from './src/core/services/BotStateManager/BotStateManager';
+import { moviesMirrorType } from './src/core/model/moviesMirrorType/moviesMirrorType';
+
+const bot: TelegramBot = new TelegramBot(telegramToken, { polling: true });
 
 const initialMessage = (new InitialMessageResponse()).getResponse()
 const getFilmsGeneralMenuAnswer = (new FilmsGeneralMenuResponse()).getResponse()
 const getTaxiGeneralMenuAnswer =  (new TaxiGeneralMenuResponse()).getResponse()
 const getAdditionalMenuAnswer = (new AdditionalMenuResponse()).getResponse()
 
+class BotHandler {
+    private botStateManager: BotStateManager;
 
-
-// Отправка фидбека на почту в случае краша приложения
-process.on('uncaughtException', async (error) => {
-    console.error('Необработанное исключение:', error);
-    await (new EmailSender).sendEmail('feedback', undefined, `Произошел краш приложения: ${error.message}`);
-});
-process.on('unhandledRejection', async (reason) => {
-    console.error('Необработанный Promise rejection:', reason);
-    await (new EmailSender).sendEmail('feedback', undefined, `Произошел краш приложения: ${reason}`);
-});
-
-const botStateManager = new BotStateManager();
-
-bot.setMyCommands([
-    {command: '/start', description: 'Открыть главное меню'},
-    {command: '/kinoland', description: 'Последняя сслыка на kinoland'},
-    {command: '/hdrezka', description: 'Последняя сслыка на hdrezka'},
-    {command: '/buses', description: 'Открыть расписание автобусов'}
-])
-
-// Обработка текстовых сообщений юзера
-bot.on('message', async (msg) => {
-    const chatId = msg.chat.id;
-    const messageText = msg.text;
-
-    if (botStateManager.isWaitingForFeedback(chatId)) {
-        await (new EmailSender).sendEmail('feedback', undefined, messageText);
-        await botStateManager.clearWaitingForFeedback(chatId);
-        await bot.sendMessage(chatId, 'Спасибо! Фидбэк отправлен разработчику');
-        setTimeout(() => bot.sendPhoto(chatId, './public/init.jpg', initialMessage), 2000);
-    } else if (messageText === '/kinoland' ) {
-        await (new ReplyChecker(chatId, 'kinoland')).checkReply();
-    } else if (messageText === '/hdrezka' ) {
-        await (new ReplyChecker(chatId, 'hdrezka')).checkReply();
-    } else if (messageText === '/buses' ) {
-        await bot.sendMessage(chatId, 'Ссылка на форму расписания автобусов', {
-            reply_markup: {
-                inline_keyboard: [[{
-                    text: '🚍 Расписание автобусов 🚍',
-                    web_app: { url: frontendLink }
-                }]]
-            }
-        });
-    } else {
-        await bot.sendPhoto(chatId, './public/init.jpg', initialMessage);
-    }
-});
-
-// Отправление сообщений ботом
-bot.on('callback_query', async (query) => {
-    if (!query.message) return;
-    if (!query.data) return;
-    const chatId = query.message.chat.id;
-
-    try {
-        await bot.deleteMessage(chatId, query.message.message_id);
-    } catch (error) {
-        const errorMessage = (error as Error).message;
-        console.error('Ошибка при удалении сообщения:', errorMessage);
-        await (new EmailSender).sendEmail('feedback', undefined, `Произошла ошибка при стандартном удалении собщений ботом: ${errorMessage}`);
+    constructor() {
+        this.botStateManager = new BotStateManager();
     }
 
-    const mirrorType = botStateManager.getMirrorType(chatId);
-    const choiceMenuData = (new FilmsMirrorMenuResponse(query.data as moviesMirrorType, chatId, botStateManager.setMirrorType.bind(botStateManager))).getResponse()
+    // Отправка фидбека на почту в случае краша приложения
+    async handleUncaughtException(error: Error): Promise<void> {
+        console.error('Необработанное исключение:', error);
+        await (new EmailSender()).sendEmail('feedback', undefined, `Произошел краш приложения: ${error.message}`);
+    }
 
-    //const choiceMenuData = getFilmsMirrorMenuAnswer(query.data as moviesMirrorType, chatId, botStateManager.setMirrorType.bind(botStateManager));
+    async handleUnhandledRejection(reason: any): Promise<void> {
+        console.error('Необработанный Promise rejection:', reason);
+        await (new EmailSender()).sendEmail('feedback', undefined, `Произошел краш приложения: ${reason}`);
+    }
 
-    
-    switch (query.data) {
-        //В главном меню:
-        case 'movies': // Видео
-            await bot.sendPhoto(chatId, `./public/videoService.jpg`, getFilmsGeneralMenuAnswer);
-            break;
-        case 'taxi': // Такси
-            await bot.sendPhoto(chatId, `./public/taxiGeneral.jpg`, getTaxiGeneralMenuAnswer);
-            break;
-        case 'additional': // Другое
-            await bot.sendPhoto(chatId, `./public/logo.jpg`, getAdditionalMenuAnswer);
-            break;
-        // В меню фильмов:
-        case 'kinoland': // KINOLAND
-        if (choiceMenuData !== null) {
-            await bot.sendPhoto(chatId, `./public/${query.data}.jpg`, choiceMenuData);
-        }
-            break;
-        case 'hdrezka': // HDREZKA
-        if (choiceMenuData !== null) {
-            await bot.sendPhoto(chatId, `./public/${query.data}.jpg`, choiceMenuData);
-        }
-            break;
-        // В меню действия с зеркалами кинчиков:
-        case 'checkLastReply': // Открыть последний ссыль
-            await (new ReplyChecker(chatId, mirrorType)).checkReply();
-            break;
-        case 'sendReq': // Обновить ссыль на зеркало
-            await (new EmailSender).sendEmail('mirror', mirrorType);
-            await bot.sendMessage(chatId, 'Запрос отправлен. Подожди несколько минут и попробуй проверить последнюю ссылку. Если она не обновится в течение 15 минут, создай репорт');
+    // Обработка текстовых сообщений юзера
+    async handleMessage(msg: any): Promise<void> {
+        const chatId = msg.chat.id;
+        const messageText = msg.text;
+
+        if (this.botStateManager.isWaitingForFeedback(chatId)) {
+            await (new EmailSender()).sendEmail('feedback', undefined, messageText);
+            await this.botStateManager.clearWaitingForFeedback(chatId);
+            await bot.sendMessage(chatId, 'Спасибо! Фидбэк отправлен разработчику');
             setTimeout(() => bot.sendPhoto(chatId, './public/init.jpg', initialMessage), 2000);
-            break;
-        case 'createTicket': // Ссыль не обновляется
-            await (new EmailSender).sendEmail('ticket', mirrorType);
-            await bot.sendMessage(chatId, 'Разработчикам отправлен отчет о проблемах с обновлением ссылки');
-            setTimeout(() => bot.sendPhoto(chatId, './public/init.jpg', initialMessage), 2000);
-            break;
-        // В меню такси:
-        case 'taxiOnline': // Заказываем такси онлайн
-            await bot.sendPhoto(chatId, './public/taxi.jpg', { ...(new TaxiTypeMenuResponse('online')).getResponse() });
-            break;
-        case 'taxiSouth': // Двигаемся по городу (юг)
-            await bot.sendPhoto(chatId, './public/south.jpg', { ...(new TaxiTypeMenuResponse('south')).getResponse()});
-            break;
-        case 'taxiNorth': // Двигаемся по городу (север)
-            await bot.sendPhoto(chatId, './public/north.jpg', { ...(new TaxiTypeMenuResponse('north')).getResponse() });
-            break;
-        // В меню дополнительно
-        case 'suggest': // Предложить функционал
-            botStateManager.setWaitingForFeedback(chatId);
-            await bot.sendMessage(chatId, 'Напишите в ответном сообщении функционал, который бы вы хотели видеть в этом боте');
-            break;
-        case 'report': // Пожаловаться на работу бота
-            botStateManager.setWaitingForFeedback(chatId);
-            await bot.sendMessage(chatId, 'Напишите в ответном сообщении проблему, с которой вы столкнулись');
-            break;
-        // Другие
-        case 'mainMenu': // Возврат в главное меню
-            await bot.sendPhoto(chatId, './public/init.jpg', initialMessage);
-            break;
-        default:
-            // Обработка для номера такси
-            if (query.data.startsWith('tel:')) {
-                const taxiData = query.data.split('|');
-                const phoneNumber = taxiData[0].replace('tel:', '');
-                const taxiName = taxiData[1];
-                await bot.sendMessage(chatId, `Набирай ${taxiName}, брат: ${phoneNumber}`);
-                if (taxiName.includes('юг')) {
-                    setTimeout(() => bot.sendPhoto(chatId, './public/south.jpg', { ...(new TaxiTypeMenuResponse('south')).getResponse()}), 3000);
-                } else if (taxiName.includes('север')) {
-                    setTimeout(() => bot.sendPhoto(chatId, './public/north.jpg', { ...(new TaxiTypeMenuResponse('north')).getResponse() }), 3000);
-                } else {
-                    setTimeout(() => bot.sendPhoto(chatId, './public/taxi.jpg', { ...(new TaxiTypeMenuResponse('online')).getResponse() }), 3000);
+        } else if (messageText === '/kinoland') {
+            await (new ReplyChecker(chatId, bot, 'kinoland')).checkReply();
+        } else if (messageText === '/hdrezka') {
+            await (new ReplyChecker(chatId, bot, 'hdrezka')).checkReply();
+        } else if (messageText === '/buses') {
+            await bot.sendMessage(chatId, 'Ссылка на форму расписания автобусов', {
+                reply_markup: {
+                    inline_keyboard: [[{
+                        text: '🚍 Расписание автобусов 🚍',
+                        web_app: { url: frontendLink }
+                    }]]
                 }
-            }
-            // Обработка для открытия группы в Telegram
-            if (query.data.startsWith('link:')) {
-                const groupLink = query.data.replace('link:', '');
-                await bot.sendMessage(chatId, `Линк на группу: ${groupLink}`);
-            }
-            break;
+            });
+        } else {
+            await bot.sendPhoto(chatId, './public/init.jpg', initialMessage);
+        }
     }
-});
+    
+    // Отправление сообщений ботом
+    async handleCallbackQuery(query: any): Promise<void> {
+        if (!query.message || !query.data) return;
+        const chatId = query.message.chat.id;
+
+        try {
+            await bot.deleteMessage(chatId, query.message.message_id);
+        } catch (error) {
+            const errorMessage = (error as Error).message;
+            console.error('Ошибка при удалении сообщения:', errorMessage);
+            await (new EmailSender()).sendEmail('feedback', undefined, `Произошла ошибка при стандартном удалении собщений ботом: ${errorMessage}`);
+        }
+
+        const mirrorType = this.botStateManager.getMirrorType(chatId);
+        const choiceMenuData = (new FilmsMirrorMenuResponse(query.data as moviesMirrorType, chatId, this.botStateManager.setMirrorType.bind(this.botStateManager))).getResponse();
+
+        switch (query.data) {
+            //В главном меню:
+            case 'movies': // Видео
+                await bot.sendPhoto(chatId, `./public/videoService.jpg`, getFilmsGeneralMenuAnswer);
+                break;
+            case 'taxi': // Такси
+                await bot.sendPhoto(chatId, `./public/taxiGeneral.jpg`, getTaxiGeneralMenuAnswer);
+                break;
+            case 'additional': // Другое
+                await bot.sendPhoto(chatId, `./public/logo.jpg`, getAdditionalMenuAnswer);
+                break;
+            // В меню фильмов:
+            case 'kinoland': // KINOLAND
+            if (choiceMenuData !== null) {
+                await bot.sendPhoto(chatId, `./public/${query.data}.jpg`, choiceMenuData);
+            }
+                break;
+            case 'hdrezka': // HDREZKA
+            if (choiceMenuData !== null) {
+                await bot.sendPhoto(chatId, `./public/${query.data}.jpg`, choiceMenuData);
+            }
+                break;
+            // В меню действия с зеркалами кинчиков:
+            case 'checkLastReply': // Открыть последний ссыль
+                await (new ReplyChecker(chatId, bot, mirrorType!)).checkReply();
+                break;
+            case 'sendReq': // Обновить ссыль на зеркало
+                await (new EmailSender).sendEmail('mirror', mirrorType);
+                await bot.sendMessage(chatId, 'Запрос отправлен. Подожди несколько минут и попробуй проверить последнюю ссылку. Если она не обновится в течение 15 минут, создай репорт');
+                setTimeout(() => bot.sendPhoto(chatId, './public/init.jpg', initialMessage), 2000);
+                break;
+            case 'createTicket': // Ссыль не обновляется
+                await (new EmailSender).sendEmail('ticket', mirrorType);
+                await bot.sendMessage(chatId, 'Разработчикам отправлен отчет о проблемах с обновлением ссылки');
+                setTimeout(() => bot.sendPhoto(chatId, './public/init.jpg', initialMessage), 2000);
+                break;
+            // В меню такси:
+            case 'taxiOnline': // Заказываем такси онлайн
+                await bot.sendPhoto(chatId, './public/taxi.jpg', { ...(new TaxiTypeMenuResponse('online')).getResponse() });
+                break;
+            case 'taxiSouth': // Двигаемся по городу (юг)
+                await bot.sendPhoto(chatId, './public/south.jpg', { ...(new TaxiTypeMenuResponse('south')).getResponse()});
+                break;
+            case 'taxiNorth': // Двигаемся по городу (север)
+                await bot.sendPhoto(chatId, './public/north.jpg', { ...(new TaxiTypeMenuResponse('north')).getResponse() });
+                break;
+            // В меню дополнительно
+            case 'suggest': // Предложить функционал
+                this.botStateManager.setWaitingForFeedback(chatId);
+                await bot.sendMessage(chatId, 'Напишите в ответном сообщении функционал, который бы вы хотели видеть в этом боте');
+                break;
+            case 'report': // Пожаловаться на работу бота
+                this.botStateManager.setWaitingForFeedback(chatId);
+                await bot.sendMessage(chatId, 'Напишите в ответном сообщении проблему, с которой вы столкнулись');
+                break;
+            // Другие
+            case 'mainMenu': // Возврат в главное меню
+                await bot.sendPhoto(chatId, './public/init.jpg', initialMessage);
+                break;
+            default:
+                // Обработка для номера такси
+                if (query.data.startsWith('tel:')) {
+                    const taxiData = query.data.split('|');
+                    const phoneNumber = taxiData[0].replace('tel:', '');
+                    const taxiName = taxiData[1];
+                    await bot.sendMessage(chatId, `Набирай ${taxiName}, брат: ${phoneNumber}`);
+                    if (taxiName.includes('юг')) {
+                        setTimeout(() => bot.sendPhoto(chatId, './public/south.jpg', { ...(new TaxiTypeMenuResponse('south')).getResponse()}), 3000);
+                    } else if (taxiName.includes('север')) {
+                        setTimeout(() => bot.sendPhoto(chatId, './public/north.jpg', { ...(new TaxiTypeMenuResponse('north')).getResponse() }), 3000);
+                    } else {
+                        setTimeout(() => bot.sendPhoto(chatId, './public/taxi.jpg', { ...(new TaxiTypeMenuResponse('online')).getResponse() }), 3000);
+                    }
+                }
+                // Обработка для открытия группы в Telegram
+                if (query.data.startsWith('link:')) {
+                    const groupLink = query.data.replace('link:', '');
+                    await bot.sendMessage(chatId, `Линк на группу: ${groupLink}`);
+                }
+                break;
+        }
+    }
+}
+
+const botHandler = new BotHandler();
+
+process.on('uncaughtException', botHandler.handleUncaughtException);
+process.on('unhandledRejection', botHandler.handleUnhandledRejection);
+
+bot.on('message', botHandler.handleMessage.bind(botHandler));
+bot.on('callback_query', botHandler.handleCallbackQuery.bind(botHandler));
