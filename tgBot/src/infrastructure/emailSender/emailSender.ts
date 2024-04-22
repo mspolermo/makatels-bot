@@ -8,8 +8,8 @@ import {
     hdrezkaSupportMail,
     creatorEmail
 } from '../../config/config';
-import { emailType } from '../../core/model/emaiType/emailType';
-import { moviesMirrorType } from '../../core/model/moviesMirrorType/moviesMirrorType';
+import { emailModel } from '../../core/model/EmailModel/EmailModel';
+import { moviesMirrorModel } from '../../core/model/MoviesMirrorModel/MoviesMirrorModel';
 
 const askDictionary = {
     mirror: {
@@ -43,7 +43,7 @@ export class EmailSender {
     }
     
     // Метод отправки письма
-    public async sendEmail(type: emailType, mirrorType?: moviesMirrorType, textBody?: string): Promise<void> {
+    public async sendEmail(type: emailModel, mirrorType?: moviesMirrorModel, textBody?: string): Promise<void> {
         let subject = '';
         let text = (textBody) ? textBody : '';
         let recipientEmail = '';

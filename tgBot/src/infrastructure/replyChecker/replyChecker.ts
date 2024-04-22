@@ -1,7 +1,7 @@
 import Imap from 'node-imap';
 import { simpleParser } from 'mailparser';
 import { EmailSender } from '../emailSender/emailSender';
-import { moviesMirrorType } from '../../core/model/moviesMirrorType/moviesMirrorType';
+import { moviesMirrorModel } from '../../core/model/MoviesMirrorModel/MoviesMirrorModel';
 
 import { 
     senderEmail,
@@ -20,7 +20,7 @@ export class ReplyChecker {
     constructor(
         private chatId: number,
         private commonBot: TelegramBot,
-        private mirrorType: moviesMirrorType,
+        private mirrorType: moviesMirrorModel,
     ) {
         this.bot = commonBot;
         if (typeof this.bot.sendMessage !== 'function') {

@@ -1,9 +1,31 @@
-import { MainKeyboardRepo } from "../../repositories/MainKeyboardRepo/MainKeyboardRepo";
+import { KeyboardButtons } from "../../model/KeyboardButtons/KeyboardButtons";
+import { MainKeyboardRepo, MainKeyboardResult } from "../../repositories/MainKeyboardRepo/MainKeyboardRepo";
 
-class MainKeyboard extends MainKeyboardRepo {
+// Реализация главных пользовательских клавиатур
+
+class MainKeyboard implements MainKeyboardRepo {
+    private keyboardButtons: KeyboardButtons[] = [];
+    private resize: boolean = true;
+
     constructor() {
-        super(true);
-        this.addRow([{ text: 'Открыть бота Макателей' }]);
+
+    }
+
+    addRow(row: KeyboardButtons): void {
+        this.keyboardButtons.push(row);
+    }
+
+    getKeyboard(resize?: boolean): MainKeyboardResult {
+        if (resize !== undefined) {
+            this.resize = resize;
+        }
+
+        return {
+            reply_markup: {
+                keyboard: this.keyboardButtons,
+                resize_keyboard: this.resize,
+            }
+        }
     }
 }
 

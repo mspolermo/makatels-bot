@@ -1,6 +1,10 @@
 import { InlineKeyboardMarkup } from 'node-telegram-bot-api';
 
-export interface BotAnswer {
-    caption: string;
-    reply_markup: InlineKeyboardMarkup;
+// Модель сообщений бота (заголовок с инлайн клавиатурой)
+
+export class BotAnswer {
+    constructor(
+        readonly caption: string,
+        readonly reply_markup: InlineKeyboardMarkup,
+    ) {}
 }

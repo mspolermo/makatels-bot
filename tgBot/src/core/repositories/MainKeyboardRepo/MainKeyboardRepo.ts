@@ -1,23 +1,15 @@
 import { KeyboardButtons } from "../../model/KeyboardButtons/KeyboardButtons";
 
-export abstract class MainKeyboardRepo {
-    protected keyboardButtons: KeyboardButtons[] = [];
-    protected resize: boolean;
+export interface MainKeyboardRepo {
+    addRow(row: KeyboardButtons): void,
+    getKeyboard(resize?: boolean): void
+}
 
-    constructor(resize: boolean) {
-        this.resize = resize;
-    }
+// Методы для имплементации главных пользовательских клавиатур 
 
-    public addRow(row: KeyboardButtons): void {
-        this.keyboardButtons.push(row);
-    }
-
-    public getKeyboard() {
-        return {
-            reply_markup: {
-                keyboard: this.keyboardButtons,
-                resize_keyboard: this.resize,
-            }
-        }
+export interface MainKeyboardResult {
+    reply_markup: {
+        keyboard: KeyboardButtons[],
+        resize_keyboard: boolean,
     }
 }

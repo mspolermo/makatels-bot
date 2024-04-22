@@ -1,1 +1,0 @@
-export type emailType = 'ticket' | 'mirror' | 'error' | 'feedback';

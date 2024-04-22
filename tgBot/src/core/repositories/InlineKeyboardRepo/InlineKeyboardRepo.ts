@@ -1,13 +1,12 @@
+import { InlineKeyboardMarkup } from "node-telegram-bot-api";
 import { InlineButtonsRow } from "../../model/InlineButtonsRow/InlineButtonsRow";
 
-export abstract class InlineKeyboardRepo {
-    protected rows: InlineButtonsRow[] = [];
+// Методы для имплементации инлайн клавиатур (клавиатур к сообщениям бота)
 
-    addRow(row: InlineButtonsRow): void {
-        this.rows.push(row);
-    }
+export interface InlineKeyboardRepo {
 
-    getKeyboard(): InlineButtonsRow[] {
-        return this.rows;
-    }
+    addRow(row: InlineButtonsRow): void;
+
+    getKeyboard(): InlineKeyboardMarkup;
+
 }

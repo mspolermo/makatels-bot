@@ -1,8 +1,8 @@
-import { moviesMirrorType } from "../../model/moviesMirrorType/moviesMirrorType";
+import { moviesMirrorModel } from "../../model/MoviesMirrorModel/MoviesMirrorModel";
 import BotStateManagerRepository from "../../repositories/BotStateManagerRepository/BotStateManagerRepository";
 
 export class BotStateManager extends BotStateManagerRepository {
-    protected state: Record<number, { mirrorType?: moviesMirrorType; waitingForFeedback?: number }> = {};
+    protected state: Record<number, { mirrorType?: moviesMirrorModel; waitingForFeedback?: number }> = {};
 
     // constructor() {
     //     super()
@@ -10,7 +10,7 @@ export class BotStateManager extends BotStateManagerRepository {
     // }
 
     // Установка типа зеркала для чата
-    setMirrorType(value: moviesMirrorType, chatId: number): void {
+    setMirrorType(value: moviesMirrorModel, chatId: number): void {
         if (!this.state[chatId]) {
             this.state[chatId] = {};
         }
@@ -31,7 +31,7 @@ export class BotStateManager extends BotStateManagerRepository {
     }
 
     // Получение типа зеркала для чата
-    getMirrorType(chatId: number): moviesMirrorType | undefined {
+    getMirrorType(chatId: number): moviesMirrorModel | undefined {
         return this.state[chatId]?.mirrorType;
     }
 

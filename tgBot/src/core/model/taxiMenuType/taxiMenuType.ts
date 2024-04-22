@@ -1,1 +1,0 @@
-export type taxiMenuType = 'south' | 'north' | 'online';

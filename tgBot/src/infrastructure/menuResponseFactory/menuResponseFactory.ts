@@ -1,8 +1,8 @@
 // TODO переделать
 
-import { moviesMirrorType } from '../../core/model/moviesMirrorType/moviesMirrorType';
+import { moviesMirrorModel } from '../../core/model/MoviesMirrorModel/MoviesMirrorModel';
 import { BotStateManager } from '../../core/services/BotStateManager/BotStateManager';
-import { taxiMenuType } from '../../core/model/taxiMenuType/taxiMenuType';
+import { taxiMenuModel } from '../../core/model/TaxiMenuModel/TaxiMenuModel';
 import { 
     AdditionalMenuResponse,
     FilmsGeneralMenuResponse,
@@ -10,7 +10,7 @@ import {
     InitialMessageResponse,
     TaxiGeneralMenuResponse,
     TaxiTypeMenuResponse
-} from '../../core/services/Response/Response';
+} from '../../core/services/BotResponses/BotResponses';
 
 let mt = '';
 
@@ -57,9 +57,9 @@ export class MenuResponseFactory {
             case 'AdditionalMenu':
                 return (new AdditionalMenuResponse()).getResponse();
             case 'FilmsMirrorMenu':
-                return (new FilmsMirrorMenuResponse(data as moviesMirrorType, chatId, this.botStateManager.setMirrorType.bind(this.botStateManager))).getResponse();
+                return (new FilmsMirrorMenuResponse(data as moviesMirrorModel, chatId, this.botStateManager.setMirrorType.bind(this.botStateManager))).getResponse();
             case 'TaxiTypeMenu':
-                return (new TaxiTypeMenuResponse(data as taxiMenuType)).getResponse();
+                return (new TaxiTypeMenuResponse(data as taxiMenuModel)).getResponse();
             default:
                 return null;
         }

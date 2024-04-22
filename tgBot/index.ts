@@ -7,12 +7,12 @@ import {
     InitialMessageResponse,
     TaxiGeneralMenuResponse,
     TaxiTypeMenuResponse
-} from './src/core/services/Response/Response';
+} from './src/core/services/BotResponses/BotResponses';
 import { ReplyChecker } from './src/infrastructure/replyChecker/replyChecker';
 import { EmailSender } from './src/infrastructure/emailSender/emailSender';
 import TelegramBot from 'node-telegram-bot-api';
 import { BotStateManager } from './src/core/services/BotStateManager/BotStateManager';
-import { moviesMirrorType } from './src/core/model/moviesMirrorType/moviesMirrorType';
+import { moviesMirrorModel } from './src/core/model/MoviesMirrorModel/MoviesMirrorModel';
 
 const bot: TelegramBot = new TelegramBot(telegramToken, { polling: true });
 
@@ -81,7 +81,7 @@ class BotHandler {
         }
 
         const mirrorType = this.botStateManager.getMirrorType(chatId);
-        const choiceMenuData = (new FilmsMirrorMenuResponse(query.data as moviesMirrorType, chatId, this.botStateManager.setMirrorType.bind(this.botStateManager))).getResponse();
+        const choiceMenuData = (new FilmsMirrorMenuResponse(query.data as moviesMirrorModel, chatId, this.botStateManager.setMirrorType.bind(this.botStateManager))).getResponse();
 
         switch (query.data) {
             //В главном меню:
