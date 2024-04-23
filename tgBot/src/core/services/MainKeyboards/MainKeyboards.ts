@@ -8,7 +8,6 @@ class MainKeyboard implements MainKeyboardRepo {
     private resize: boolean = true;
 
     constructor() {
-
     }
 
     addRow(row: KeyboardButtons): void {

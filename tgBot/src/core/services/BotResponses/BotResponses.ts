@@ -24,7 +24,7 @@ class InitialMessageResponse implements BotResponseRepo {
 
     constructor() {
         this.caption = "MAKATEL'S BOT SERVICES";
-        this.replyMarkup = new MainMenuKeyboard().getKeyboard();
+        this.replyMarkup = MainMenuKeyboard.getKeyboard();
     }
 
     getResponse(): BotAnswer {
@@ -38,7 +38,7 @@ class FilmsGeneralMenuResponse implements BotResponseRepo {
 
     constructor() {
         this.caption = "MAKATEL'S BOT VIDEO SERVICE";
-        this.replyMarkup = new VideoMenuKeyboard().getKeyboard()
+        this.replyMarkup = VideoMenuKeyboard.getKeyboard()
     }
 
     getResponse(): BotAnswer {
@@ -56,7 +56,8 @@ class FilmsMirrorMenuResponse implements BotResponseRepo {
         private setFunction: Function
     ) {
         this.caption = `${site.toUpperCase()}:`;
-        this.replyMarkup = new VideoChoiceMenuKeyboard(this.site).getKeyboard();
+        VideoChoiceMenuKeyboard.updateChoiceOption(this.site)
+        this.replyMarkup = VideoChoiceMenuKeyboard.getKeyboard();
         this.setFunction(site, chatId);
     }
 
@@ -71,7 +72,7 @@ class TaxiGeneralMenuResponse implements BotResponseRepo {
 
     constructor() {
         this.caption = `MAKATEL'S BOT TAXI SERVICE`;
-        this.replyMarkup = new GeneralTaxiMenuKeyboard().getKeyboard();
+        this.replyMarkup = GeneralTaxiMenuKeyboard.getKeyboard();
     }
 
     getResponse(): BotAnswer {
@@ -109,13 +110,13 @@ class TaxiTypeMenuResponse implements BotResponseRepo {
 
         switch(this.type) {
             case 'south':
-                taxiKeyboard = new SouthTaxiMenuKeyboard();
+                taxiKeyboard = SouthTaxiMenuKeyboard;
                 break;
             case 'north':
-                taxiKeyboard = new NorthTaxiMenuKeyboard();
+                taxiKeyboard = NorthTaxiMenuKeyboard;
                 break;
             case 'online':
-                taxiKeyboard = new OnlineTaxiMenuKeyboard();
+                taxiKeyboard = OnlineTaxiMenuKeyboard;
                 break;
             default:
                 break;
@@ -137,7 +138,7 @@ class AdditionalMenuResponse implements BotResponseRepo {
 
     constructor() {
         this.caption = `MAKATEL'S BOT ADDITIONAL SERVICES`;
-        this.replyMarkup = new AdditionalMenuKeyboard().getKeyboard();
+        this.replyMarkup = AdditionalMenuKeyboard.getKeyboard();
     }
 
     getResponse(): BotAnswer {
