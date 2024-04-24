@@ -18,13 +18,13 @@ import {
 
 // Реализация "Сообщения бота" (заголовок с инлайн-клавиатурой)
 
-class InitialMessageResponse implements BotResponseRepo {
-    private readonly caption: string;
-    private readonly replyMarkup: InlineKeyboardMarkup;
+class InitialResponse implements BotResponseRepo {
+    protected caption: string;
+    protected replyMarkup: InlineKeyboardMarkup;
 
-    constructor() {
-        this.caption = "MAKATEL'S BOT SERVICES";
-        this.replyMarkup = MainMenuKeyboard.getKeyboard();
+    constructor(caption: string, keyboard:InlineKeyboardRepo) {
+        this.caption = caption;
+        this.replyMarkup = keyboard.getKeyboard();
     }
 
     getResponse(): BotAnswer {
@@ -32,61 +32,31 @@ class InitialMessageResponse implements BotResponseRepo {
     }
 }
 
-class FilmsGeneralMenuResponse implements BotResponseRepo {
-    private readonly caption: string;
-    private readonly replyMarkup: InlineKeyboardMarkup;
+// Расширенные классы с функцией апдейта (для типа видеосервисов и такси)
 
-    constructor() {
-        this.caption = "MAKATEL'S BOT VIDEO SERVICE";
-        this.replyMarkup = VideoMenuKeyboard.getKeyboard()
+class FilmsMirrorMenuResponseClass extends InitialResponse {
+
+    constructor(caption: moviesMirrorModel, keyboard:InlineKeyboardRepo) {
+        super(caption, keyboard)
     }
 
-    getResponse(): BotAnswer {
-        return new BotAnswer(this.caption, this.replyMarkup);
-    }
-}
-
-class FilmsMirrorMenuResponse implements BotResponseRepo {
-    private readonly caption: string;
-    private readonly replyMarkup: InlineKeyboardMarkup;
-
-    constructor( 
-        private site: moviesMirrorModel, 
-        private chatId: number, 
-        private setFunction: Function
+    updateResponse(
+        site: moviesMirrorModel, 
+        chatId: number, 
+        setFunction: Function
     ) {
         this.caption = `${site.toUpperCase()}:`;
-        VideoChoiceMenuKeyboard.updateChoiceOption(this.site)
+        VideoChoiceMenuKeyboard.updateChoiceOption(site)
         this.replyMarkup = VideoChoiceMenuKeyboard.getKeyboard();
-        this.setFunction(site, chatId);
-    }
-
-    getResponse(): BotAnswer {
-        return new BotAnswer(this.caption, this.replyMarkup);
+        setFunction(site, chatId);
     }
 }
 
-class TaxiGeneralMenuResponse implements BotResponseRepo {
-    private readonly caption: string;
-    private readonly replyMarkup: InlineKeyboardMarkup;
+class TaxiTypeMenuResponseClass extends InitialResponse {
+    private type:taxiMenuModel = 'south';
 
-    constructor() {
-        this.caption = `MAKATEL'S BOT TAXI SERVICE`;
-        this.replyMarkup = GeneralTaxiMenuKeyboard.getKeyboard();
-    }
-
-    getResponse(): BotAnswer {
-        return new BotAnswer(this.caption, this.replyMarkup);
-    }
-}
-
-class TaxiTypeMenuResponse implements BotResponseRepo {
-    private caption: string = '';
-    private replyMarkup: InlineKeyboardMarkup = { inline_keyboard: [] };
-
-    constructor(private type: taxiMenuModel) {
-        this.setCaption();
-        this.setKeyboard();
+    constructor(caption: taxiMenuModel, keyboard:InlineKeyboardRepo) {
+        super(caption, keyboard)
     }
 
     private setCaption(): void {
@@ -127,30 +97,36 @@ class TaxiTypeMenuResponse implements BotResponseRepo {
         }
     }
 
-    getResponse(): BotAnswer {
-        return new BotAnswer(this.caption, this.replyMarkup);
+    updateTaxiType(type:taxiMenuModel) {
+        this.type = type;
+        this.setCaption();
+        this.setKeyboard();
     }
+
 }
 
-class AdditionalMenuResponse implements BotResponseRepo {
-    private readonly caption: string;
-    private readonly replyMarkup: InlineKeyboardMarkup;
+// Экспорты готовых сообщений бота с инлайн-клавиатурами
 
-    constructor() {
-        this.caption = `MAKATEL'S BOT ADDITIONAL SERVICES`;
-        this.replyMarkup = AdditionalMenuKeyboard.getKeyboard();
-    }
+export const InitialMessageResponse = new InitialResponse(
+    "MAKATEL'S BOT SERVICES", MainMenuKeyboard
+);
 
-    getResponse(): BotAnswer {
-        return new BotAnswer(this.caption, this.replyMarkup);
-    }
-}
+export const FilmsGeneralMenuResponse = new InitialResponse(
+    "MAKATEL'S BOT VIDEO SERVICE", VideoMenuKeyboard
+);
 
-export {
-    InitialMessageResponse,
-    FilmsGeneralMenuResponse,
-    FilmsMirrorMenuResponse,
-    TaxiGeneralMenuResponse,
-    TaxiTypeMenuResponse,
-    AdditionalMenuResponse
-};
+export const TaxiGeneralMenuResponse = new InitialResponse(
+    "MAKATEL'S BOT TAXI SERVICE", GeneralTaxiMenuKeyboard
+);
+
+export const AdditionalMenuResponse = new InitialResponse(
+    "MAKATEL'S BOT ADDITIONAL SERVICES", AdditionalMenuKeyboard
+);
+
+export const FilmsMirrorMenuResponse = new FilmsMirrorMenuResponseClass(
+    'hdrezka', VideoChoiceMenuKeyboard
+); // с данными по-умолчанию
+
+export const TaxiTypeMenuResponse = new TaxiTypeMenuResponseClass(
+    'south', SouthTaxiMenuKeyboard
+); // с данными по-умолчанию

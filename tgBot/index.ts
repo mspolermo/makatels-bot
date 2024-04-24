@@ -16,10 +16,10 @@ import { moviesMirrorModel } from './src/core/model/MoviesMirrorModel/MoviesMirr
 
 const bot: TelegramBot = new TelegramBot(telegramToken, { polling: true });
 
-const initialMessage = (new InitialMessageResponse()).getResponse()
-const getFilmsGeneralMenuAnswer = (new FilmsGeneralMenuResponse()).getResponse()
-const getTaxiGeneralMenuAnswer =  (new TaxiGeneralMenuResponse()).getResponse()
-const getAdditionalMenuAnswer = (new AdditionalMenuResponse()).getResponse()
+const initialMessage = InitialMessageResponse.getResponse()
+const getFilmsGeneralMenuAnswer = FilmsGeneralMenuResponse.getResponse()
+const getTaxiGeneralMenuAnswer =  TaxiGeneralMenuResponse.getResponse()
+const getAdditionalMenuAnswer = AdditionalMenuResponse.getResponse()
 
 class BotHandler {
     private botStateManager: BotStateManager;
@@ -81,7 +81,11 @@ class BotHandler {
         }
 
         const mirrorType = this.botStateManager.getMirrorType(chatId);
-        const choiceMenuData = (new FilmsMirrorMenuResponse(query.data as moviesMirrorModel, chatId, this.botStateManager.setMirrorType.bind(this.botStateManager))).getResponse();
+        // Обявляем обновляемые ответы бота для видеосервисов и такси
+        const menuData = FilmsMirrorMenuResponse
+        menuData.updateResponse(query.data as moviesMirrorModel, chatId, this.botStateManager.setMirrorType.bind(this.botStateManager));
+        const choiceMenuData = menuData.getResponse()
+        const taxiResponse = TaxiTypeMenuResponse;
 
         switch (query.data) {
             //В главном меню:
@@ -121,13 +125,16 @@ class BotHandler {
                 break;
             // В меню такси:
             case 'taxiOnline': // Заказываем такси онлайн
-                await bot.sendPhoto(chatId, './public/taxi.jpg', { ...(new TaxiTypeMenuResponse('online')).getResponse() });
+                taxiResponse.updateTaxiType('online');
+                await bot.sendPhoto(chatId, './public/taxi.jpg', { ...(taxiResponse).getResponse() });
                 break;
             case 'taxiSouth': // Двигаемся по городу (юг)
-                await bot.sendPhoto(chatId, './public/south.jpg', { ...(new TaxiTypeMenuResponse('south')).getResponse()});
+                taxiResponse.updateTaxiType('south');
+                await bot.sendPhoto(chatId, './public/south.jpg', { ...(taxiResponse).getResponse()});
                 break;
             case 'taxiNorth': // Двигаемся по городу (север)
-                await bot.sendPhoto(chatId, './public/north.jpg', { ...(new TaxiTypeMenuResponse('north')).getResponse() });
+                taxiResponse.updateTaxiType('north');
+                await bot.sendPhoto(chatId, './public/north.jpg', { ...(taxiResponse).getResponse() });
                 break;
             // В меню дополнительно
             case 'suggest': // Предложить функционал
@@ -149,13 +156,16 @@ class BotHandler {
                     const phoneNumber = taxiData[0].replace('tel:', '');
                     const taxiName = taxiData[1];
                     await bot.sendMessage(chatId, `Набирай ${taxiName}, брат: ${phoneNumber}`);
+                    
                     if (taxiName.includes('юг')) {
-                        setTimeout(() => bot.sendPhoto(chatId, './public/south.jpg', { ...(new TaxiTypeMenuResponse('south')).getResponse()}), 3000);
+                        taxiResponse.updateTaxiType('south');
                     } else if (taxiName.includes('север')) {
-                        setTimeout(() => bot.sendPhoto(chatId, './public/north.jpg', { ...(new TaxiTypeMenuResponse('north')).getResponse() }), 3000);
+                        taxiResponse.updateTaxiType('north');
                     } else {
-                        setTimeout(() => bot.sendPhoto(chatId, './public/taxi.jpg', { ...(new TaxiTypeMenuResponse('online')).getResponse() }), 3000);
+                        taxiResponse.updateTaxiType('online');
+                        
                     }
+                    setTimeout(() => bot.sendPhoto(chatId, './public/taxi.jpg', { ...(taxiResponse).getResponse() }), 3000);
                 }
                 // Обработка для открытия группы в Telegram
                 if (query.data.startsWith('link:')) {

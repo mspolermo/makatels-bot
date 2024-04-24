@@ -51,13 +51,15 @@ export class MenuResponseFactory {
             case 'InitialMessage':
                 return this.getInitialMessage();
             case 'FilmsGeneralMenu':
-                return (new FilmsGeneralMenuResponse()).getResponse();
+                return FilmsGeneralMenuResponse.getResponse();
             case 'TaxiGeneralMenu':
-                return (new TaxiGeneralMenuResponse()).getResponse();
+                return TaxiGeneralMenuResponse.getResponse();
             case 'AdditionalMenu':
-                return (new AdditionalMenuResponse()).getResponse();
+                return AdditionalMenuResponse.getResponse();
             case 'FilmsMirrorMenu':
-                return (new FilmsMirrorMenuResponse(data as moviesMirrorModel, chatId, this.botStateManager.setMirrorType.bind(this.botStateManager))).getResponse();
+                const menuData = FilmsMirrorMenuResponse
+                menuData.updateResponse(data as moviesMirrorModel, chatId, this.botStateManager.setMirrorType.bind(this.botStateManager));
+                return menuData.getResponse()
             case 'TaxiTypeMenu':
                 return (new TaxiTypeMenuResponse(data as taxiMenuModel)).getResponse();
             default:
@@ -66,6 +68,6 @@ export class MenuResponseFactory {
     }
 
     public getInitialMessage(): any {
-        return (new InitialMessageResponse()).getResponse();
+        return InitialMessageResponse.getResponse();
     }
 }
