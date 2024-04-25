@@ -16,7 +16,7 @@ import {
     VideoMenuKeyboard
 } from "../InlineKeyboards/InlineKeyboards";
 
-// Реализация "Сообщения бота" (заголовок с инлайн-клавиатурой)
+// Реализация класса создания сообщений бота (заголовок с инлайн-клавиатурой)
 
 class InitialResponse implements BotResponseRepo {
     protected caption: string;
@@ -40,15 +40,15 @@ class FilmsMirrorMenuResponseClass extends InitialResponse {
         super(caption, keyboard)
     }
 
-    updateResponse(
+    getResponseViaMoviesMirrorType(
         site: moviesMirrorModel, 
         chatId: number, 
         setFunction: Function
     ) {
         this.caption = `${site.toUpperCase()}:`;
-        VideoChoiceMenuKeyboard.updateChoiceOption(site)
-        this.replyMarkup = VideoChoiceMenuKeyboard.getKeyboard();
+        this.replyMarkup = VideoChoiceMenuKeyboard.getResponseViaMoviesMirror(site)
         setFunction(site, chatId);
+        return this.getResponse();
     }
 }
 
@@ -97,10 +97,11 @@ class TaxiTypeMenuResponseClass extends InitialResponse {
         }
     }
 
-    updateTaxiType(type:taxiMenuModel) {
+    getResponseViaTaxiType(type:taxiMenuModel) {
         this.type = type;
         this.setCaption();
         this.setKeyboard();
+        return this.getResponse()
     }
 
 }

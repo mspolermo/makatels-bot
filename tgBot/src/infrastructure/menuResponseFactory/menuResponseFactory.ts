@@ -61,7 +61,9 @@ export class MenuResponseFactory {
                 menuData.updateResponse(data as moviesMirrorModel, chatId, this.botStateManager.setMirrorType.bind(this.botStateManager));
                 return menuData.getResponse()
             case 'TaxiTypeMenu':
-                return (new TaxiTypeMenuResponse(data as taxiMenuModel)).getResponse();
+                const taxiMenuResp =  TaxiTypeMenuResponse
+                taxiMenuResp.updateTaxiType(data as taxiMenuModel)
+                return taxiMenuResp.getResponse();
             default:
                 return null;
         }

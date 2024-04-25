@@ -81,11 +81,8 @@ class BotHandler {
         }
 
         const mirrorType = this.botStateManager.getMirrorType(chatId);
-        // Обявляем обновляемые ответы бота для видеосервисов и такси
-        const menuData = FilmsMirrorMenuResponse
-        menuData.updateResponse(query.data as moviesMirrorModel, chatId, this.botStateManager.setMirrorType.bind(this.botStateManager));
-        const choiceMenuData = menuData.getResponse()
-        const taxiResponse = TaxiTypeMenuResponse;
+        // Обявляем обновляемые ответы бота для видеосервисов
+        const choiceMenuData = FilmsMirrorMenuResponse.getResponseViaMoviesMirrorType(query.data as moviesMirrorModel, chatId, this.botStateManager.setMirrorType.bind(this.botStateManager))
 
         switch (query.data) {
             //В главном меню:
@@ -125,16 +122,13 @@ class BotHandler {
                 break;
             // В меню такси:
             case 'taxiOnline': // Заказываем такси онлайн
-                taxiResponse.updateTaxiType('online');
-                await bot.sendPhoto(chatId, './public/taxi.jpg', { ...(taxiResponse).getResponse() });
+                await bot.sendPhoto(chatId, './public/taxi.jpg', { ...(TaxiTypeMenuResponse.getResponseViaTaxiType('online')) });
                 break;
             case 'taxiSouth': // Двигаемся по городу (юг)
-                taxiResponse.updateTaxiType('south');
-                await bot.sendPhoto(chatId, './public/south.jpg', { ...(taxiResponse).getResponse()});
+                await bot.sendPhoto(chatId, './public/south.jpg', { ...(TaxiTypeMenuResponse.getResponseViaTaxiType('south'))});
                 break;
             case 'taxiNorth': // Двигаемся по городу (север)
-                taxiResponse.updateTaxiType('north');
-                await bot.sendPhoto(chatId, './public/north.jpg', { ...(taxiResponse).getResponse() });
+                await bot.sendPhoto(chatId, './public/north.jpg', { ...(TaxiTypeMenuResponse.getResponseViaTaxiType('north'))});
                 break;
             // В меню дополнительно
             case 'suggest': // Предложить функционал
@@ -158,14 +152,13 @@ class BotHandler {
                     await bot.sendMessage(chatId, `Набирай ${taxiName}, брат: ${phoneNumber}`);
                     
                     if (taxiName.includes('юг')) {
-                        taxiResponse.updateTaxiType('south');
+                        setTimeout(() => bot.sendPhoto(chatId, './public/south.jpg', { ...(TaxiTypeMenuResponse.getResponseViaTaxiType('south'))}), 3000);
                     } else if (taxiName.includes('север')) {
-                        taxiResponse.updateTaxiType('north');
+                        setTimeout(() => bot.sendPhoto(chatId, './public/taxi.jpg', { ...(TaxiTypeMenuResponse.getResponseViaTaxiType('north'))}), 3000);
                     } else {
-                        taxiResponse.updateTaxiType('online');
-                        
+                        setTimeout(() => bot.sendPhoto(chatId, './public/taxi.jpg', { ...(TaxiTypeMenuResponse.getResponseViaTaxiType('online'))}), 3000);
                     }
-                    setTimeout(() => bot.sendPhoto(chatId, './public/taxi.jpg', { ...(taxiResponse).getResponse() }), 3000);
+                    
                 }
                 // Обработка для открытия группы в Telegram
                 if (query.data.startsWith('link:')) {
