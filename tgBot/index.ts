@@ -112,7 +112,7 @@ class BotHandler {
                 break;
             case 'sendReq': // Обновить ссыль на зеркало
                 await (new EmailSender).sendEmail('mirror', mirrorType);
-                await bot.sendMessage(chatId, 'Запрос отправлен. Подожди несколько минут и попробуй проверить последнюю ссылку. Если она не обновится в течение 15 минут, создай репорт');
+                await bot.sendMessage(1, 'Запрос отправлен. Подожди несколько минут и попробуй проверить последнюю ссылку. Если она не обновится в течение 15 минут, создай репорт');
                 setTimeout(() => bot.sendPhoto(chatId, './public/init.jpg', initialMessage), 2000);
                 break;
             case 'createTicket': // Ссыль не обновляется
