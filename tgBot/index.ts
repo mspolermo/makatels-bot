@@ -13,6 +13,7 @@ import { EmailSender } from './src/infrastructure/emailSender/emailSender';
 import TelegramBot from 'node-telegram-bot-api';
 import { BotStateManager } from './src/core/services/BotStateManager/BotStateManager';
 import { moviesMirrorModel } from './src/core/model/MoviesMirrorModel/MoviesMirrorModel';
+import { taxiDataParser } from './src/infrastructure/taxiDataParser/taxiDataParser';
 
 const bot: TelegramBot = new TelegramBot(telegramToken, { polling: true });
 
@@ -144,26 +145,23 @@ class BotHandler {
                 await bot.sendPhoto(chatId, './public/init.jpg', initialMessage);
                 break;
             default:
-                // Обработка для номера такси
-                if (query.data.startsWith('tel:')) {
-                    const taxiData = query.data.split('|');
-                    const phoneNumber = taxiData[0].replace('tel:', '');
-                    const taxiName = taxiData[1];
-                    await bot.sendMessage(chatId, `Набирай ${taxiName}, брат: ${phoneNumber}`);
-                    
-                    if (taxiName.includes('юг')) {
-                        setTimeout(() => bot.sendPhoto(chatId, './public/south.jpg', { ...(TaxiTypeMenuResponse.getResponseViaTaxiType('south'))}), 3000);
-                    } else if (taxiName.includes('север')) {
-                        setTimeout(() => bot.sendPhoto(chatId, './public/taxi.jpg', { ...(TaxiTypeMenuResponse.getResponseViaTaxiType('north'))}), 3000);
-                    } else {
-                        setTimeout(() => bot.sendPhoto(chatId, './public/taxi.jpg', { ...(TaxiTypeMenuResponse.getResponseViaTaxiType('online'))}), 3000);
+                // Обработка типов выбранного такси
+                const taxiParsingData = taxiDataParser.handleData(query.data);
+                if (taxiParsingData.taxiDataType === 'link') {
+                    await bot.sendMessage(chatId, `Линк на группу: ${taxiParsingData.taxiData}`);
+                } else {
+                    await bot.sendMessage(chatId, `Набирай ${taxiParsingData.taxiName}, брат: ${taxiParsingData.taxiData}`);
+                    switch (taxiParsingData.taxiDataType) {
+                        case 'south':
+                            setTimeout(() => bot.sendPhoto(chatId, './public/south.jpg', { ...(TaxiTypeMenuResponse.getResponseViaTaxiType('south'))}), 3000);
+                            break;
+                        case 'north':
+                            setTimeout(() => bot.sendPhoto(chatId, './public/north.jpg', { ...(TaxiTypeMenuResponse.getResponseViaTaxiType('north'))}), 3000);
+                            break;
+                        case 'online':
+                            setTimeout(() => bot.sendPhoto(chatId, './public/taxi.jpg', { ...(TaxiTypeMenuResponse.getResponseViaTaxiType('online'))}), 3000);
+                            break;
                     }
-                    
-                }
-                // Обработка для открытия группы в Telegram
-                if (query.data.startsWith('link:')) {
-                    const groupLink = query.data.replace('link:', '');
-                    await bot.sendMessage(chatId, `Линк на группу: ${groupLink}`);
                 }
                 break;
         }
