@@ -1,27 +1,23 @@
 import { taxiMenuModel } from "../../core/model/TaxiMenuModel/TaxiMenuModel";
+import { BotAnswer } from "../../core/model/BotAnswer/BotAnswer";
+import { TaxiTypeMenuResponse } from "../../core/services/BotResponses/BotResponses";
 
-type taxiData = TaxiPhoneType | TexiLinkType;
-
-interface TaxiPhoneType {
-    taxiType: 'tel';
-    taxiData: string;
-    taxiName: string;
-    taxiDataType: taxiMenuModel;
+interface taxiData {
+    msg: string;
+    photo: [string, BotAnswer] | undefined;
 }
-
-interface TexiLinkType {
-    taxiDataType: 'link';
-    taxiData: string;
-}
-
 
 class TaxiDataParser {
     protected taxiData: string = '';
 
     constructor() {}
 
-    handleData(dataString: string): taxiData {
+    handleData(
+        dataString: string
+    ): taxiData {
         let taxiDataType: taxiMenuModel;
+        let taxiPhotoLink: string;
+
         this.taxiData = dataString;
 
         if (this.taxiData.startsWith('tel:')) {
@@ -31,23 +27,24 @@ class TaxiDataParser {
 
             if (taxiName.includes('юг')) {
                 taxiDataType = 'south';
+                taxiPhotoLink = './public/south.jpg';
             } else if (taxiName.includes('север')) {
-                taxiDataType = 'north'
+                taxiDataType = 'north';
+                taxiPhotoLink = './public/north.jpg';
             } else {
-                taxiDataType = 'online'
+                taxiDataType = 'online';
+                taxiPhotoLink = './public/taxi.jpg';
             }
-
 
             return {
-                taxiType: 'tel',
-                taxiName: taxiName, 
-                taxiData: phoneNumber,
-                taxiDataType
+                msg:  `Набирай ${taxiName}, брат: ${phoneNumber}`,
+                photo: [taxiPhotoLink, { ...(TaxiTypeMenuResponse.getResponseViaTaxiType(taxiDataType))}]
             }
+
         } else {
             return {
-                taxiDataType: 'link', 
-                taxiData: this.taxiData.replace('link:', '')
+                msg:  `Линк на группу: ${this.taxiData.replace('link:', '')}`,
+                photo: undefined
             }
         } 
     }

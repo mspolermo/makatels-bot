@@ -147,21 +147,10 @@ class BotHandler {
             default:
                 // Обработка типов выбранного такси
                 const taxiParsingData = taxiDataParser.handleData(query.data);
-                if (taxiParsingData.taxiDataType === 'link') {
-                    await bot.sendMessage(chatId, `Линк на группу: ${taxiParsingData.taxiData}`);
-                } else {
-                    await bot.sendMessage(chatId, `Набирай ${taxiParsingData.taxiName}, брат: ${taxiParsingData.taxiData}`);
-                    switch (taxiParsingData.taxiDataType) {
-                        case 'south':
-                            setTimeout(() => bot.sendPhoto(chatId, './public/south.jpg', { ...(TaxiTypeMenuResponse.getResponseViaTaxiType('south'))}), 3000);
-                            break;
-                        case 'north':
-                            setTimeout(() => bot.sendPhoto(chatId, './public/north.jpg', { ...(TaxiTypeMenuResponse.getResponseViaTaxiType('north'))}), 3000);
-                            break;
-                        case 'online':
-                            setTimeout(() => bot.sendPhoto(chatId, './public/taxi.jpg', { ...(TaxiTypeMenuResponse.getResponseViaTaxiType('online'))}), 3000);
-                            break;
-                    }
+                await bot.sendMessage(chatId, taxiParsingData.msg);
+                if (taxiParsingData.photo !== undefined) {
+                    const [photoPath, botAnswer] = taxiParsingData.photo;
+                    setTimeout(() => bot.sendPhoto(chatId, photoPath, botAnswer), 3000);
                 }
                 break;
         }
