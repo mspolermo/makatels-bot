@@ -1,8 +1,7 @@
 // TODO переделать
-
+import TelegramBot from 'node-telegram-bot-api';
 import { moviesMirrorModel } from '../../core/model/MoviesMirrorModel/MoviesMirrorModel';
 import { BotStateManager } from '../../core/services/BotStateManager/BotStateManager';
-import { taxiMenuModel } from '../../core/model/TaxiMenuModel/TaxiMenuModel';
 import { 
     AdditionalMenuResponse,
     FilmsGeneralMenuResponse,
@@ -11,38 +10,80 @@ import {
     TaxiGeneralMenuResponse,
     TaxiTypeMenuResponse
 } from '../../core/services/BotResponses/BotResponses';
-import { BotAnswer } from '../../core/model/BotAnswer/BotAnswer';
-import TelegramBot from 'node-telegram-bot-api';
+
 import { ReplyChecker } from '../replyChecker/replyChecker';
 import { EmailSender } from '../emailSender/emailSender';
+import { taxiDataParser } from '../taxiDataParser/taxiDataParser';
+import { frontendLink } from '../../config/config';
 
-
-interface responseFactory {
-    msg: string;
-    photo: [string, BotAnswer] | undefined;
-}
-
-
-
-let mt = '';
 
 export class MenuResponseFactory {
-    private msg: string | undefined = undefined;
-    private photo: [string, BotAnswer] | undefined = undefined;
-
     private bot: TelegramBot;
     private botStateManager: BotStateManager;
 
-    constructor(bot: TelegramBot, botStateManager: BotStateManager) {
+    constructor(bot: TelegramBot) {
         this.bot = bot;
-        this.botStateManager = botStateManager;
+        //this.botStateManager = botStateManager;
+        this.botStateManager = new BotStateManager();
     }
-    public async getMessageType(chatId: number, data: string) {
-        const choiceMenuData = FilmsMirrorMenuResponse.getResponseViaMoviesMirrorType(
-            data as moviesMirrorModel,
-            chatId,
-            this.botStateManager.setMirrorType.bind(this.botStateManager)
-        );
+
+    // Отправка фидбека на почту в случае краша приложения
+    async handleUncaughtException(error: Error): Promise<void> {
+        console.error('Необработанное исключение:', error);
+        await (new EmailSender()).sendEmail('feedback', undefined, `Произошел краш приложения: ${error.message}`);
+    }
+
+    async handleUnhandledRejection(reason: any): Promise<void> {
+        console.error('Необработанный Promise rejection:', reason);
+        await (new EmailSender()).sendEmail('feedback', undefined, `Произошел краш приложения: ${reason}`);
+    }
+
+    // Обработка текстовых сообщений юзера
+    async handleMessage(msg: any): Promise<void> {
+        const chatId = msg.chat.id;
+        const messageText = msg.text;
+
+        if (this.botStateManager.isWaitingForFeedback(chatId)) {
+            await (new EmailSender()).sendEmail('feedback', undefined, messageText);
+            await this.botStateManager.clearWaitingForFeedback(chatId);
+            await this.bot.sendMessage(chatId, 'Спасибо! Фидбэк отправлен разработчику');
+            setTimeout(() => this.bot.sendPhoto(chatId, './public/init.jpg', InitialMessageResponse.getResponse()), 2000);
+        } else if (messageText === '/kinoland') {
+            await (new ReplyChecker(chatId, this.bot, 'kinoland')).checkReply();
+        } else if (messageText === '/hdrezka') {
+            await (new ReplyChecker(chatId, this.bot, 'hdrezka')).checkReply();
+        } else if (messageText === '/buses') {
+            await this.bot.sendMessage(chatId, 'Ссылка на форму расписания автобусов', {
+                reply_markup: {
+                    inline_keyboard: [[{
+                        text: '🚍 Расписание автобусов 🚍',
+                        web_app: { url: frontendLink }
+                    }]]
+                }
+            });
+        } else {
+            await this.bot.sendPhoto(chatId, './public/init.jpg', InitialMessageResponse.getResponse());
+        }
+    }
+
+
+    async handleCallbackQuery(query: any): Promise<void> {
+        if (!query.message || !query.data) return;
+        const chatId = query.message.chat.id;
+
+        try {
+            await this.bot.deleteMessage(chatId, query.message.message_id);
+        } catch (error) {
+            const errorMessage = (error as Error).message;
+            console.error('Ошибка при удалении сообщения:', errorMessage);
+            await (new EmailSender()).sendEmail('feedback', undefined, `Произошла ошибка при стандартном удалении собщений ботом: ${errorMessage}`);
+        }
+
+        this.getMenuAction(chatId, query.data)
+    }
+
+    public async getMenuAction(chatId: number, data: string) {
+
         const mirrorType = this.botStateManager.getMirrorType(chatId);
 
         switch (data) {
@@ -58,17 +99,27 @@ export class MenuResponseFactory {
                 break;
             // В меню фильмов:
             case 'kinoland': // KINOLAND
-            if (choiceMenuData !== null) {
-                await this.bot.sendPhoto(chatId, `./public/${data}.jpg`, choiceMenuData);
-            }
+
+                const kinolandData = FilmsMirrorMenuResponse.getResponseViaMoviesMirrorType(
+                    data as moviesMirrorModel,
+                    chatId,
+                    this.botStateManager.setMirrorType.bind(this.botStateManager)
+                );
+                await this.bot.sendPhoto(chatId, `./public/${data}.jpg`, kinolandData);
+
                 break;
             case 'hdrezka': // HDREZKA
-            if (choiceMenuData !== null) {
-                await this.bot.sendPhoto(chatId, `./public/${data}.jpg`, choiceMenuData);
-            }
+                const hdrezkaData = FilmsMirrorMenuResponse.getResponseViaMoviesMirrorType(
+                data as moviesMirrorModel,
+                chatId,
+                this.botStateManager.setMirrorType.bind(this.botStateManager)
+            );
+                await this.bot.sendPhoto(chatId, `./public/${data}.jpg`, hdrezkaData);
+            
                 break;
             // В меню действия с зеркалами кинчиков:
             case 'checkLastReply': // Открыть последний ссыль
+    console.log(mirrorType)
                 await (new ReplyChecker(chatId, this.bot, mirrorType!)).checkReply();
                 break;
             case 'sendReq': // Обновить ссыль на зеркало
@@ -106,7 +157,7 @@ export class MenuResponseFactory {
                 break;
             default:
                 // Обработка типов выбранного такси
-                const taxiParsingData = taxiDataParser.handleData(query.data);
+                const taxiParsingData = taxiDataParser.handleData(data);
                 await this.bot.sendMessage(chatId, taxiParsingData.msg);
                 if (taxiParsingData.photo !== undefined) {
                     const [photoPath, botAnswer] = taxiParsingData.photo;
