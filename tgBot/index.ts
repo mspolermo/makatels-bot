@@ -2,12 +2,15 @@ import TelegramBot from 'node-telegram-bot-api';
 
 import {telegramToken } from './src/config/config';
 import { MenuResponseFactory } from './src/infrastructure/menuResponseFactory/menuResponseFactory';
+import { BotStateManager } from './src/core/services/BotStateManager/BotStateManager';
 
 const bot: TelegramBot = new TelegramBot(telegramToken, { polling: true });
-const botHandler = new MenuResponseFactory(bot);
+const botStateManager = new BotStateManager();
 
-process.on('uncaughtException', botHandler.handleUncaughtException);
-process.on('unhandledRejection', botHandler.handleUnhandledRejection);
+const botMenuHandler = new MenuResponseFactory(bot, botStateManager);
 
-bot.on('message', botHandler.handleMessage.bind(botHandler));
-bot.on('callback_query', botHandler.handleCallbackQuery.bind(botHandler));
+process.on('uncaughtException', botMenuHandler.handleUncaughtException);
+process.on('unhandledRejection', botMenuHandler.handleUnhandledRejection);
+
+bot.on('message', botMenuHandler.handleMessage.bind(botMenuHandler));
+bot.on('callback_query', botMenuHandler.handleCallbackQuery.bind(botMenuHandler));

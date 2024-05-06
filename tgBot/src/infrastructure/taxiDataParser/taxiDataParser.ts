@@ -1,6 +1,6 @@
 import { taxiMenuModel } from "../../core/model/TaxiMenuModel/TaxiMenuModel";
 import { BotAnswer } from "../../core/model/BotAnswer/BotAnswer";
-import { TaxiTypeMenuResponse } from "../../core/services/BotResponses/BotResponses";
+import { TaxiTypeMenu } from "../../core/services/BotResponses/BotResponses";
 
 interface taxiData {
     msg: string;
@@ -38,7 +38,7 @@ class TaxiDataParser {
 
             return {
                 msg:  `Набирай ${taxiName}, брат: ${phoneNumber}`,
-                photo: [taxiPhotoLink, { ...(TaxiTypeMenuResponse.getResponseViaTaxiType(taxiDataType))}]
+                photo: [taxiPhotoLink, { ...(TaxiTypeMenu.getResponseViaTaxiType(taxiDataType))}]
             }
 
         } else {

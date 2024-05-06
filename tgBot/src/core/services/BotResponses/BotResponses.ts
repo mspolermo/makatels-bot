@@ -34,7 +34,7 @@ class InitialResponse implements BotResponseRepo {
 
 // Расширенные классы с функцией апдейта (для типа видеосервисов и такси)
 
-class FilmsMirrorMenuResponseClass extends InitialResponse {
+class FilmsMirrorMenuResponse extends InitialResponse {
 
     constructor(caption: moviesMirrorModel, keyboard:InlineKeyboardRepo) {
         super(caption, keyboard)
@@ -52,7 +52,7 @@ class FilmsMirrorMenuResponseClass extends InitialResponse {
     }
 }
 
-class TaxiTypeMenuResponseClass extends InitialResponse {
+class TaxiTypeMenuResponse extends InitialResponse {
     private type:taxiMenuModel = 'south';
 
     constructor(caption: taxiMenuModel, keyboard:InlineKeyboardRepo) {
@@ -108,26 +108,26 @@ class TaxiTypeMenuResponseClass extends InitialResponse {
 
 // Экспорты готовых сообщений бота с инлайн-клавиатурами
 
-export const InitialMessageResponse = new InitialResponse(
+export const InitialMenu = new InitialResponse(
     "MAKATEL'S BOT SERVICES", MainMenuKeyboard
 );
 
-export const FilmsGeneralMenuResponse = new InitialResponse(
+export const MoviesGeneralMenu = new InitialResponse(
     "MAKATEL'S BOT VIDEO SERVICE", VideoMenuKeyboard
 );
 
-export const TaxiGeneralMenuResponse = new InitialResponse(
+export const TaxiGeneralMenu = new InitialResponse(
     "MAKATEL'S BOT TAXI SERVICE", GeneralTaxiMenuKeyboard
 );
 
-export const AdditionalMenuResponse = new InitialResponse(
+export const AdditionalMenu = new InitialResponse(
     "MAKATEL'S BOT ADDITIONAL SERVICES", AdditionalMenuKeyboard
 );
 
-export const FilmsMirrorMenuResponse = new FilmsMirrorMenuResponseClass(
+export const MoviesMirrorMenu = new FilmsMirrorMenuResponse(
     'hdrezka', VideoChoiceMenuKeyboard
 ); // с данными по-умолчанию
 
-export const TaxiTypeMenuResponse = new TaxiTypeMenuResponseClass(
+export const TaxiTypeMenu = new TaxiTypeMenuResponse(
     'south', SouthTaxiMenuKeyboard
 ); // с данными по-умолчанию
