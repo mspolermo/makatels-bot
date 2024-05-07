@@ -1,26 +1,27 @@
+import TelegramBot from 'node-telegram-bot-api';
 import Imap from 'node-imap';
 import { simpleParser } from 'mailparser';
+
 import { EmailSender } from '../emailSender/emailSender';
 import { moviesMirrorModel } from '../../core/model/MoviesMirrorModel/MoviesMirrorModel';
-
+import { MainKeyboard } from '../../core/services/MainKeyboards/MainKeyboards';
 import { 
     senderEmail,
     senderPassword,
     kinolandEmail,
     hdrezkaEmail
- } from '../../config/config';
-import TelegramBot from 'node-telegram-bot-api';
-import { MainKeyboard } from '../../core/services/MainKeyboards/MainKeyboards';
+} from '../../config/config';
+
+
 
 export class ReplyChecker {
     private imap: Imap;
-    private recipientEmail: string;
+    private recipientEmail: string = kinolandEmail;
     private bot: TelegramBot;
+    private mirrorType: moviesMirrorModel = 'hdrezka';
 
     constructor(
-        private chatId: number,
-        private commonBot: TelegramBot,
-        private mirrorType: moviesMirrorModel,
+        commonBot: TelegramBot,
     ) {
         this.bot = commonBot;
         if (typeof this.bot.sendMessage !== 'function') {
@@ -34,22 +35,21 @@ export class ReplyChecker {
             tls: true
         });
 
-        this.recipientEmail = this.mirrorType === 'kinoland' ? kinolandEmail : hdrezkaEmail;
+        
     }
 
     // Метод проверки ответного письма
-    public async checkReply(): Promise<void> {
-        if (!this.mirrorType) {
-            console.error('mirrorType == undefined в функции replyCheck');
-            return;
-        }
-        const loadingMessage = await this.bot.sendMessage(this.chatId, 'Загрузка...'); // Используем свойство bot для отправки сообщения
+    public async checkReply(chatId: number, mirrorType: moviesMirrorModel): Promise<void> {
+        this.mirrorType = mirrorType;
+        this.recipientEmail = this.mirrorType === 'kinoland' ? kinolandEmail : hdrezkaEmail;
+
+        const loadingMessage = await this.bot.sendMessage(chatId, 'Загрузка...'); // Используем свойство bot для отправки сообщения
 
         this.imap.once('ready', async () => {
             await this.getLastEmailFromSender(async (emailText: string) => {
                 try {
 
-                    await this.bot.deleteMessage(this.chatId, loadingMessage.message_id); // Используем свойство bot для удаления сообщения
+                    await this.bot.deleteMessage(chatId, loadingMessage.message_id); // Используем свойство bot для удаления сообщения
                 
                 } catch (error: any) {
                     console.error('Ошибка при удалении сообщения:', error.message);
@@ -57,7 +57,7 @@ export class ReplyChecker {
                 }
                 let value = this.extractPersonalLink(emailText);
                 await this.bot.sendMessage(
-                    this.chatId,
+                    chatId,
                     `Последний ссыль на ${this.mirrorType}: ${value}`,
                     (new MainKeyboard()).getKeyboard()
                 );

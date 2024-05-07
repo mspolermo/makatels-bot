@@ -114,3 +114,7 @@ export const VideoChoiceMenuKeyboard = new VideoChoiceInlineKeyboardClas([
     [{ text: '<- К предыдущему меню', callback_data: 'movies' }],
     [{ text: '<-- Вернуться в главное меню', callback_data: 'mainMenu' }],
 ])
+
+export const OpenFrontendKeyboard = new InlineKeyboardClass([
+    [{ text: '🚍 Расписание автобусов 🚍', web_app: {url: frontendLink} }]
+])

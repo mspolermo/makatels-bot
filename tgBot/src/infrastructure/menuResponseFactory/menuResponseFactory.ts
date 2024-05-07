@@ -14,18 +14,20 @@ import {
 import { ReplyChecker } from '../replyChecker/replyChecker';
 import { EmailSender } from '../emailSender/emailSender';
 import { taxiDataParser } from '../taxiDataParser/taxiDataParser';
-import { frontendLink } from '../../config/config';
+import { OpenFrontendKeyboard } from '../../core/services/InlineKeyboards/InlineKeyboards';
 
 
 export class MenuResponseFactory {
     private bot: TelegramBot;
     private botStateManager: BotStateManager;
-    private emailSender: EmailSender; 
+    private emailSender: EmailSender;
+    private replyChecker: ReplyChecker; 
 
     constructor(bot: TelegramBot, botStateManager: BotStateManager) {
         this.bot = bot;
         this.botStateManager = botStateManager;
         this.emailSender = new EmailSender();
+        this.replyChecker = new ReplyChecker(bot);
     }
 
     // Отправка фидбека на почту в случае краша приложения
@@ -50,17 +52,12 @@ export class MenuResponseFactory {
             await this.bot.sendMessage(chatId, 'Спасибо! Фидбэк отправлен разработчику');
             setTimeout(() => this.bot.sendPhoto(chatId, './public/init.jpg', InitialMenu.getResponse()), 2000);
         } else if (messageText === '/kinoland') {
-            await (new ReplyChecker(chatId, this.bot, 'kinoland')).checkReply();
+            await this.replyChecker.checkReply(chatId, 'kinoland');
         } else if (messageText === '/hdrezka') {
-            await (new ReplyChecker(chatId, this.bot, 'hdrezka')).checkReply();
+            await this.replyChecker.checkReply(chatId, 'hdrezka');
         } else if (messageText === '/buses') {
             await this.bot.sendMessage(chatId, 'Ссылка на форму расписания автобусов', {
-                reply_markup: {
-                    inline_keyboard: [[{
-                        text: '🚍 Расписание автобусов 🚍',
-                        web_app: { url: frontendLink }
-                    }]]
-                }
+                reply_markup: OpenFrontendKeyboard.getKeyboard()
             });
         } else {
             await this.bot.sendPhoto(chatId, './public/init.jpg', InitialMenu.getResponse());
@@ -119,7 +116,7 @@ export class MenuResponseFactory {
                 break;
             // В меню действия с зеркалами кинчиков:
             case 'checkLastReply': // Открыть последний ссыль
-                await (new ReplyChecker(chatId, this.bot, mirrorType!)).checkReply();
+                await this.replyChecker.checkReply(chatId, mirrorType!);
                 break;
             case 'sendReq': // Обновить ссыль на зеркало
                 await this.emailSender.sendEmail('mirror', mirrorType);
