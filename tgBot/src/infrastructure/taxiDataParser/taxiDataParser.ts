@@ -12,9 +12,7 @@ class TaxiDataParser {
 
     constructor() {}
 
-    handleData(
-        dataString: string
-    ): taxiData {
+    handleData(dataString: string): taxiData {
         let taxiDataType: taxiMenuModel;
         let taxiPhotoLink: string;
 

@@ -4,7 +4,7 @@ import { simpleParser } from 'mailparser';
 
 import { EmailSender } from '../emailSender/emailSender';
 import { moviesMirrorModel } from '../../core/model/MoviesMirrorModel/MoviesMirrorModel';
-import { MainKeyboard } from '../../core/services/MainKeyboards/MainKeyboards';
+import mainKeyboard from '../../core/services/MainKeyboards/MainKeyboards';
 import { 
     senderEmail,
     senderPassword,
@@ -12,21 +12,20 @@ import {
     hdrezkaEmail
 } from '../../config/config';
 
-
-
 export class ReplyChecker {
-    private imap: Imap;
-    private recipientEmail: string = kinolandEmail;
     private bot: TelegramBot;
+    private imap: Imap;
+
+    private recipientEmail: string = kinolandEmail;
     private mirrorType: moviesMirrorModel = 'hdrezka';
 
-    constructor(
-        commonBot: TelegramBot,
-    ) {
+    private emailSender: EmailSender;
+
+    constructor(commonBot: TelegramBot) {
         this.bot = commonBot;
-        if (typeof this.bot.sendMessage !== 'function') {
-            throw new Error('Invalid bot object: sendMessage method is missing.');
-        }
+        // if (typeof this.bot.sendMessage !== 'function') {
+        //     throw new Error('Invalid bot object: sendMessage method is missing.');
+        // }
         this.imap = new Imap({
             user: senderEmail,
             password: senderPassword,
@@ -34,37 +33,38 @@ export class ReplyChecker {
             port: 993,
             tls: true
         });
-
-        
+        this.emailSender = new EmailSender();
     }
 
     // Метод проверки ответного письма
     public async checkReply(chatId: number, mirrorType: moviesMirrorModel): Promise<void> {
-        this.mirrorType = mirrorType;
-        this.recipientEmail = this.mirrorType === 'kinoland' ? kinolandEmail : hdrezkaEmail;
-
+        this.recipientUpdate(mirrorType);
         const loadingMessage = await this.bot.sendMessage(chatId, 'Загрузка...'); // Используем свойство bot для отправки сообщения
 
         this.imap.once('ready', async () => {
             await this.getLastEmailFromSender(async (emailText: string) => {
                 try {
-
                     await this.bot.deleteMessage(chatId, loadingMessage.message_id); // Используем свойство bot для удаления сообщения
-                
                 } catch (error: any) {
                     console.error('Ошибка при удалении сообщения:', error.message);
-                    await (new EmailSender).sendEmail('feedback', undefined, `Произошла ошибка при стандартном удалении собщений ботом: ${error.message}`);
+                    await this.emailSender.sendEmail('feedback', undefined, `Произошла ошибка при стандартном удалении собщений ботом: ${error.message}`);
                 }
                 let value = this.extractPersonalLink(emailText);
                 await this.bot.sendMessage(
                     chatId,
                     `Последний ссыль на ${this.mirrorType}: ${value}`,
-                    (new MainKeyboard()).getKeyboard()
+                    mainKeyboard.getKeyboard()
                 );
             });
         });
 
         this.imap.connect();
+    }
+
+    // Метод обновления адресата письма в зависимости от типа выбранного зеркало
+    private recipientUpdate(mirrorType: moviesMirrorModel): void {
+        this.mirrorType = mirrorType;
+        this.recipientEmail = this.mirrorType === 'kinoland' ? kinolandEmail : hdrezkaEmail;
     }
 
     // Метод получения последнего письма от отправителя
@@ -73,7 +73,7 @@ export class ReplyChecker {
             const searchCriteria = [['FROM', this.recipientEmail]];
             this.imap.search(searchCriteria, async (err, results) => {
                 if (err) {
-                    await (new EmailSender).sendEmail('feedback', undefined, `Произошла ошибка во время проверки (запрос на получение в replyCheck) последнего письма от отправителя`);
+                    await this.emailSender.sendEmail('feedback', undefined, `Произошла ошибка во время проверки (запрос на получение в replyCheck) последнего письма от отправителя`);
                     throw err;
                 }
 
@@ -116,7 +116,7 @@ export class ReplyChecker {
                 return restOfString.substring(0, endIndex).trim();
             }
         }
-        (new EmailSender).sendEmail('error', undefined);
+        this.emailSender.sendEmail('error', undefined);
         return ' отсутствует (ошибка извлечения линка). Репорт отправлен разработчику бота';
     }
 }

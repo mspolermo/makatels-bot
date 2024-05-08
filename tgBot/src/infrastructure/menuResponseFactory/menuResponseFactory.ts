@@ -26,6 +26,7 @@ export class MenuResponseFactory {
     constructor(bot: TelegramBot, botStateManager: BotStateManager) {
         this.bot = bot;
         this.botStateManager = botStateManager;
+        
         this.emailSender = new EmailSender();
         this.replyChecker = new ReplyChecker(bot);
     }
@@ -63,7 +64,6 @@ export class MenuResponseFactory {
             await this.bot.sendPhoto(chatId, './public/init.jpg', InitialMenu.getResponse());
         }
     }
-
 
     async handleCallbackQuery(query: any): Promise<void> {
         if (!query.message || !query.data) return;

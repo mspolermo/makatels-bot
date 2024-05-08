@@ -28,4 +28,9 @@ class MainKeyboard implements MainKeyboardRepo {
     }
 }
 
-export { MainKeyboard };
+const mainKeyboard = new MainKeyboard();
+mainKeyboard.addRow([
+    { text: 'Открыть бота Макателей', resize: true }
+]);
+
+export default mainKeyboard;
