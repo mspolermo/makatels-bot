@@ -19,4 +19,4 @@
 
 ### tgBot
 
-Логика бота
+Логика бота (ООП) - [tgBot](/tgBot/README.md)
