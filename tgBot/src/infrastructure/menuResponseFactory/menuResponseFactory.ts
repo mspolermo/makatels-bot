@@ -39,7 +39,11 @@ export class MenuResponseFactory {
 
     async handleUnhandledRejection(reason: any): Promise<void> {
         console.error('Необработанный Promise rejection:', reason);
-        await this.emailSender.sendEmail('feedback', undefined, `Произошел краш приложения: ${reason}`);
+        try {
+            await this.emailSender.sendEmail('feedback', undefined, `Произошел краш приложения: ${reason}`);
+    }catch (emailError) {
+            console.error('Failed to send email:', emailError);
+        }
     }
 
     // Обработка текстовых сообщений юзера
@@ -120,7 +124,7 @@ export class MenuResponseFactory {
                 break;
             case 'sendReq': // Обновить ссыль на зеркало
                 await this.emailSender.sendEmail('mirror', mirrorType);
-                await this.bot.sendMessage(1, 'Запрос отправлен. Подожди несколько минут и попробуй проверить последнюю ссылку. Если она не обновится в течение 15 минут, создай репорт');
+                await this.bot.sendMessage(chatId, 'Запрос отправлен. Подожди несколько минут и попробуй проверить последнюю ссылку. Если она не обновится в течение 15 минут, создай репорт');
                 setTimeout(() => this.bot.sendPhoto(chatId, './public/init.jpg', InitialMenu.getResponse()), 2000);
                 break;
             case 'createTicket': // Ссыль не обновляется
