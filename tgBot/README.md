@@ -1,4 +1,12 @@
-# tgBot
+![Axios](https://img.shields.io/badge/Axios-1.6.7-red)
+![Cheerio](https://img.shields.io/badge/Cheerio-1.0.0--rc.12-orange)
+![CORS](https://img.shields.io/badge/CORS-2.8.5-purple)
+![Dotenv](https://img.shields.io/badge/Dotenv-16.4.5-green)
+![Node Telegram Bot API](https://img.shields.io/badge/Node_Telegram_Bot_API-0.61.0-blue)
+![Nodemailer](https://img.shields.io/badge/Nodemailer-6.9.4-orange)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.3.3-blue)
+
+# tgBot 
 
 ## Описание
 
