@@ -1,3 +1,7 @@
+![Axios](https://img.shields.io/badge/Axios-1.6.8-red)
+![CORS](https://img.shields.io/badge/CORS-2.8.5-orange)
+![Express](https://img.shields.io/badge/Express-4.19.2-purple)
+
 # html-parser
 
 ## Описание

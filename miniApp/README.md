@@ -1,3 +1,12 @@
+![Axios](https://img.shields.io/badge/Axios-1.6.8-red)
+![Cheerio](https://img.shields.io/badge/Cheerio-1.0.0--rc.12-orange)
+![Ngrok](https://img.shields.io/badge/Ngrok-5.0.0--beta.2-purple)
+![React](https://img.shields.io/badge/React-18.2.0-blue)
+![React DOM](https://img.shields.io/badge/React_DOM-18.2.0-blue)
+![React Router DOM](https://img.shields.io/badge/React_Router_DOM-6.22.3-orange)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.2.2-blue)
+![Vite](https://img.shields.io/badge/Vite-5.2.0-purple)
+
 # Makatels bot - miniApp
 
 ## Описание
