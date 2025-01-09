@@ -33,7 +33,7 @@
     <img src="./public/screenshots/HDREZKA.png" alt="Видеосервис" style="width: 240px; border-radius: 8px;" />
   </a>
   <a href="./public/screenshots/Taxi.png" target="_blank">
-    <img src="./public/screenshots/Taxi.png" alt="Выбор таксисервиса" style="width: 240px; border-radius: 8px;" />
+    <img src="./public/screenshots/Taxi.png" alt="Выбор сервиса такси" style="width: 240px; border-radius: 8px;" />
   </a>
   <a href="./public/screenshots/TaxiSouth.png" target="_blank">
     <img src="./public/screenshots/TaxiSouth.png" alt="Такси" style="width: 240px; border-radius: 8px;" />
