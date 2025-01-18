@@ -1,16 +1,21 @@
 <template>
   <div>
-    <!-- Условное отображение компонента в зависимости от маршрута -->
     <BusRouteToEkb v-if="route.busDirection === 'toEkb'" :route="route" />
-    <BusRouteToPolevskoy v-else-if="route.busDirection === 'toPolevskoy'" :route="route" />
+    <BusRouteToPolevskoy
+      v-else-if="route.busDirection === 'toPolevskoy'"
+      :route="route"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { PropType } from "vue";
-import { busRouteToEkbType, busRouteToPolevskoyType } from "../../model/types/types";
-import { BusRouteToPolevskoy } from "../busRouteToPolevskoy/BusRouteToPolevskoy";
-import { BusRouteToEkb } from "../busRouteToEkb/busRouteToEkb";
+import {
+  busRouteToEkbType,
+  busRouteToPolevskoyType,
+} from "../../model/types/types";
+import BusRouteToPolevskoy from "../busRouteToPolevskoy/BusRouteToPolevskoy.vue";
+import BusRouteToEkb from "../busRouteToEkb/BusRouteToEkb.vue";
 
 export default {
   name: "BusRoute",
@@ -26,7 +31,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-/* Стили для компонента, если необходимо */
-</style>
