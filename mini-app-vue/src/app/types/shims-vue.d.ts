@@ -10,3 +10,4 @@ declare module "*.module.css" {
   export default classes;
 }
 
+declare const __HTML_PARSER_API__: string;
