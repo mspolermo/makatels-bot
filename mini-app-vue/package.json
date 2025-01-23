@@ -15,10 +15,10 @@
     "register-service-worker": "^1.7.2",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
-    "vue-tg": "^0.8.0",
     "vuex": "^4.0.0"
   },
   "devDependencies": {
+    "@types/telegram-web-app": "^7.0.0",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "@vue/cli-plugin-babel": "~5.0.0",
@@ -34,6 +34,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-vue": "^8.0.3",
     "prettier": "^2.4.1",
+    "telegram-webapps": "^7.0.0",
     "typescript": "~4.5.5"
   },
   "eslintConfig": {

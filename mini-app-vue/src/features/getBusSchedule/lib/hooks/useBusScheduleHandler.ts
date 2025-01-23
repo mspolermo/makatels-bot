@@ -11,7 +11,7 @@ import {
 import { busDirectionType } from "@/entities/busRoute";
 
 export function useBusScheduleHandler(direction: busDirectionType) {
-  const tg = useTelegram();
+  const { tg } = useTelegram();
   const busSchedule = ref<busScheduleType>([]);
   const filtredSchedule = ref<busScheduleType>([]);
   const activeStatus = ref<filtresType>("all");

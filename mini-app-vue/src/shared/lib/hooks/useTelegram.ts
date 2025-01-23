@@ -1,38 +1,24 @@
-import { useWebApp } from "vue-tg";
-import { useWebAppMainButton } from "vue-tg";
+import TelegramWebApps from "telegram-webapps";
+
+const tg = Telegram.WebApp;
 
 export function useTelegram() {
-  const webApp = useWebApp(); // Получаем объект WebApp
-  const {
-    isMainButtonVisible,
-    setMainButtonParams,
-    showMainButton,
-    hideMainButton,
-  } = useWebAppMainButton();
-
   const onClose = () => {
-    webApp.close(); // Закрываем WebApp
+    tg.close();
   };
 
   const onToggleButton = () => {
-    if (isMainButtonVisible.value) {
-      hideMainButton(); // Прячем кнопку
+    if (tg.MainButton.isVisible) {
+      tg.MainButton.hide();
     } else {
-      showMainButton(); // Показываем кнопку
+      tg.MainButton.show();
     }
   };
 
-  const updateButtonText = (text: string) => {
-    setMainButtonParams({
-      text, // Устанавливаем текст кнопки
-    });
-  };
-
   return {
-    tg: webApp,
-    user: webApp.initDataUnsafe?.user,
+    tg,
+    user: tg.initDataUnsafe?.user,
     onClose,
     onToggleButton,
-    updateButtonText,
   };
 }
