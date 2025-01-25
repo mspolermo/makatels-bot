@@ -1,7 +1,7 @@
 <template>
-  <div class="BusSchedule">
-    <h2 class="heading">Расписание автобусов</h2>
-    <Filter :title="''" :tabs="tabsArray" class="filtres" />
+  <div :class="cls.BusSchedule">
+    <h2 :class="cls.heading">Расписание автобусов</h2>
+    <Filter :title="''" :tabs="tabsArray" :class="cls.filtres" />
     <GetBusSchedule :direction="direction" />
   </div>
 </template>
@@ -10,12 +10,18 @@
 import { ref, computed } from "vue";
 import GetBusSchedule from "@/features/getBusSchedule";
 import Filter from "@/shared/ui/Filter/Filter";
+import cls from "./BusSchedule.module.css";
 
 export default {
   name: "BusSchedule",
   components: {
     GetBusSchedule,
     Filter,
+  },
+  computed: {
+    cls() {
+      return cls;
+    },
   },
   setup() {
     const direction = ref("toEkb");
@@ -40,26 +46,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.BusSchedule {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.heading {
-  text-align: center;
-  color: var(--tg-theme-text-color);
-}
-
-.filtres {
-  padding: 20px 0;
-  border: 1px solid var(--tg-theme-hint-color);
-  justify-content: space-around;
-}
-
-.filtres h2 {
-  display: none;
-}
-</style>
