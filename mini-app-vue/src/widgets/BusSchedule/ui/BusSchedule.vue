@@ -1,7 +1,7 @@
 <template>
   <div :class="cls.BusSchedule">
     <h2 :class="cls.heading">Расписание автобусов</h2>
-    <Filter :title="''" :tabs="tabsArray" :class="cls.filtres" />
+    <FilterComponent :title="''" :tabs="tabsArray" :class="cls.filtres" />
     <GetBusSchedule :direction="direction" />
   </div>
 </template>
@@ -9,14 +9,14 @@
 <script>
 import { ref, computed } from "vue";
 import GetBusSchedule from "@/features/getBusSchedule";
-import Filter from "@/shared/ui/Filter/Filter";
+import FilterComponent from "@/shared/ui/FilterComponent/FilterComponent.vue";
 import cls from "./BusSchedule.module.css";
 
 export default {
   name: "BusSchedule",
   components: {
     GetBusSchedule,
-    Filter,
+    FilterComponent,
   },
   computed: {
     cls() {

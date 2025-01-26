@@ -15,7 +15,7 @@
 <script lang="ts">
 import { defineComponent, computed, PropType } from "vue";
 import { useBusScheduleHandler } from "../lib/hooks/useBusScheduleHandler";
-import FilterComponent from "@/shared/ui/Filter/Filter.vue";
+import FilterComponent from "@/shared/ui/FilterComponent/FilterComponent.vue";
 import BusRoute from "@/entities/busRoute";
 import cls from "./GetBusSchedule.module.css";
 import { busDirectionType } from "@/entities/busRoute/model/types/types";
