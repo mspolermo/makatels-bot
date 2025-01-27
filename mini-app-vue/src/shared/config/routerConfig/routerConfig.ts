@@ -13,12 +13,12 @@ export const RoutePath: Record<AppRoutes, string> = {
 export const RouteConfig: Record<AppRoutes, RouteRecordRaw> = {
   [AppRoutes.MAIN]: {
     path: RoutePath.main,
-    name: "main",
-    component: () => import("@/pages/MainPage"),
+    name: "MainPage",
+    component: () => import("@/pages/MainPage/MainPage.vue"),
   },
   [AppRoutes.NOT_FOUND]: {
     path: RoutePath.not_found,
-    name: "not_found",
-    component: () => import("@/pages/NotFoundPage"),
+    name: "NotFoundPage",
+    component: () => import("@/pages/NotFoundPage/NotFoundPage.vue"),
   },
 };

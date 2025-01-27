@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import BusSchedule from "@/widgets/BusSchedule";
+import { BusSchedule } from "@/widgets/BusSchedule";
 
 export default {
   name: "MainPage",

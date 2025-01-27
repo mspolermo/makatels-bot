@@ -8,7 +8,7 @@
 
 <script>
 import { ref, computed } from "vue";
-import GetBusSchedule from "@/features/getBusSchedule";
+import { GetBusSchedule } from "@/features/getBusSchedule";
 import FilterComponent from "@/shared/ui/FilterComponent/FilterComponent.vue";
 import cls from "./BusSchedule.module.css";
 

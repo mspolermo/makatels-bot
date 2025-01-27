@@ -1,3 +1,1 @@
-import BusSchedule from "./ui/BusSchedule.vue";
-
-export { BusSchedule };
+export { default as BusSchedule } from "./ui/BusSchedule.vue";

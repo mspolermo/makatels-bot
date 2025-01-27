@@ -12,10 +12,10 @@ module.exports = defineConfig({
       }),
     ],
   },
-  devServer: {
-    allowedHosts: "all", // Разрешить все хосты (в том числе ngrok)
-    server: {
-      type: "https", // Настроить HTTPS через новую опцию
-    },
-  },
+  // devServer: {
+  //   allowedHosts: "all", // Разрешить все хосты (в том числе ngrok)
+  //   server: {
+  //     type: "https", // Настроить HTTPS через новую опцию
+  //   },
+  // },
 });

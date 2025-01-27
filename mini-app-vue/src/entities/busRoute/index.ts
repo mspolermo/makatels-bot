@@ -3,6 +3,4 @@ export type {
   busRouteToEkbType,
   busRouteToPolevskoyType,
 } from "./model/types/types";
-import BusRoute from "./ui/busRoute/BusRoute.vue";
-
-export default { BusRoute };
+export { default as BusRoute } from "./ui/busRoute/BusRoute.vue";

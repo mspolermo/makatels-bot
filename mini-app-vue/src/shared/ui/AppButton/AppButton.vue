@@ -14,6 +14,11 @@ export default {
     },
   },
   inheritAttrs: false,
+  computed: {
+    attrs() {
+      return this.$attrs;
+    },
+  },
   methods: {
     handleClick(event) {
       this.$emit("click", event);
