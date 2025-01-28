@@ -1,4 +1,4 @@
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, Ref } from "vue";
 import { useTelegram } from "@/shared/lib/hooks/useTelegram";
 import { fetchHTML } from "../../model/services/fetchHTML/fetchHTML";
 import { parseBusSchedule } from "../helpers/parseBusSchedule";
@@ -10,18 +10,18 @@ import {
 } from "../../model/types/types";
 import { busDirectionType } from "@/entities/busRoute";
 
-export function useBusScheduleHandler(direction: busDirectionType) {
+export function useBusScheduleHandler(direction: Ref<busDirectionType>) {
   const { tg } = useTelegram();
   const busSchedule = ref<busScheduleType>([]);
   const filtredSchedule = ref<busScheduleType>([]);
   const activeStatus = ref<filtresType>("all");
   const mainBtn = ref<mainBtnType>("Показать ближайшие");
 
-  onMounted(() => {
-    tg.MainButton.show();
+  // Загрузка расписания и фильтрация
+  const fetchAndParseSchedule = (newDirection: busDirectionType) => {
     fetchHTML().then(
       (data) => {
-        const parsedSchedule = parseBusSchedule(data, direction);
+        const parsedSchedule = parseBusSchedule(data, newDirection);
         busSchedule.value = parsedSchedule;
         filtredSchedule.value = parsedSchedule;
         mainBtn.value = "Показать ближайшие";
@@ -30,8 +30,24 @@ export function useBusScheduleHandler(direction: busDirectionType) {
         throw new Error(error);
       }
     );
+  };
+
+  // Первоначальная загрузка
+  onMounted(() => {
+    tg.MainButton.show();
+    fetchAndParseSchedule(direction.value);
   });
 
+  // Обработка изменений direction
+  watch(
+    direction,
+    (newDirection) => {
+      fetchAndParseSchedule(newDirection);
+    },
+    { immediate: true } // Выполняем сразу при монтировании
+  );
+
+  // Главная кнопка
   watch(mainBtn, (newVal) => {
     tg.MainButton.setParams({ text: newVal });
   });
@@ -47,6 +63,7 @@ export function useBusScheduleHandler(direction: busDirectionType) {
     }
   });
 
+  // Фильтрация
   const filterHandler = (value: filtresType) => {
     activeStatus.value = value;
     mainBtn.value = "Показать ближайшие";

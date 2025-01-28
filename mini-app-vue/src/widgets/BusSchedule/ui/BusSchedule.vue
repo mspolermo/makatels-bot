@@ -30,12 +30,20 @@ export default {
       {
         name: "Полевской -> Екб",
         activeStatus: direction.value === "toEkb",
-        onClick: () => (direction.value = "toEkb"),
+        onClick: () => {
+          console.log("Before change:", direction.value);
+          direction.value = "toEkb";
+          console.log("After change:", direction.value);
+        },
       },
       {
         name: "Екб -> Полевской",
         activeStatus: direction.value === "toPolevskoy",
-        onClick: () => (direction.value = "toPolevskoy"),
+        onClick: () => {
+          console.log("Before change:", direction.value);
+          direction.value = "toPolevskoy";
+          console.log("After change:", direction.value);
+        },
       },
     ]);
 

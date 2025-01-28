@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from "vue";
+import { defineComponent, computed, watch, PropType, ref } from "vue";
 import { useBusScheduleHandler } from "../lib/hooks/useBusScheduleHandler";
 import FilterComponent from "@/shared/ui/FilterComponent/FilterComponent.vue";
 import { BusRoute } from "@/entities/busRoute";
@@ -30,8 +30,18 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const directionRef = ref(props.direction);
     const { filtredSchedule, activeStatus, filterHandler } =
-      useBusScheduleHandler(props.direction);
+      useBusScheduleHandler(directionRef);
+
+    // Watch for direction changes and reinitialize the handler
+    watch(
+      () => props.direction,
+      (newDirection) => {
+        console.log("Direction changed to:", newDirection);
+        directionRef.value = newDirection;
+      }
+    );
 
     const tabsArray = computed(() => [
       {
