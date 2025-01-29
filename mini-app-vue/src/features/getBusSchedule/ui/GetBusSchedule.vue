@@ -34,11 +34,9 @@ export default defineComponent({
     const { filtredSchedule, activeStatus, filterHandler } =
       useBusScheduleHandler(directionRef);
 
-    // Watch for direction changes and reinitialize the handler
     watch(
       () => props.direction,
       (newDirection) => {
-        console.log("Direction changed to:", newDirection);
         directionRef.value = newDirection;
       }
     );

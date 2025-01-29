@@ -1,8 +1,8 @@
 <template>
-  <nav>
+  <!--<nav>
     <router-link to="/">Home</router-link> |
     <router-link to="/not_found">NotFound</router-link>
-  </nav>
+  </nav> -->
   <AppHeader />
   <router-view />
 </template>

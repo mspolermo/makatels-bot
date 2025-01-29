@@ -16,7 +16,7 @@
           <span :class="cls.time">{{ route.startTimeNorth }}</span>
         </p>
       </div>
-      <p :class="cls.finishTme">Прибытие в Екб: {{ route.finishTme }}</p>
+      <p :class="cls.finishTime">Прибытие в Екб: {{ route.finishTme }}</p>
     </div>
   </div>
 </template>
