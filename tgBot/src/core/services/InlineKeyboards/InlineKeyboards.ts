@@ -1,5 +1,5 @@
 import { InlineKeyboard, InlineButtonsRow } from "../../model/InlineButtonsRow/InlineButtonsRow";
-import { frontendLink } from "../../../config/config";
+import { frontendLink, frontendVueLink } from "../../../config/config";
 import { moviesMirrorModel } from "../../model/MoviesMirrorModel/MoviesMirrorModel";
 import { InlineKeyboardRepo } from "../../repositories/InlineKeyboardRepo/InlineKeyboardRepo";
 
@@ -102,6 +102,7 @@ export const OnlineTaxiMenuKeyboard = new InlineKeyboardClass([
 
 export const AdditionalMenuKeyboard = new InlineKeyboardClass([
     [{ text: '🚍 Расписание автобусов 🚍', web_app: {url: frontendLink} }],
+    [{ text: '🚍 Расписание автобусов (VUE) 🚍', web_app: {url: frontendVueLink} }],
     [{ text: '🗳️ Предложить функционал', callback_data: 'suggest'}],
     [{ text: '📬 Пожаловаться на работу бота', callback_data: 'report'}],
     [{ text: '<-- Вернуться в главное меню', callback_data: 'mainMenu'}]

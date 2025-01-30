@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import TelegramWebApps from "telegram-webapps";
 
 const tg = Telegram.WebApp;

@@ -15,6 +15,7 @@ export const hdrezkaEmail = process.env.HDREZKA_EMAIL || '';
 export const hdrezkaSupportMail = process.env.HDREZKA_SUPPORT_MAIL || '';
 
 export const frontendLink = process.env.FRONTEND_LINK || '';
+export const frontendVueLink = process.env.FRONTEND_VUE_LINK || '';
 
 
 // Auth data
