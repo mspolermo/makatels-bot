@@ -7,7 +7,7 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.2.2-blue)
 ![Vite](https://img.shields.io/badge/Vite-5.2.0-purple)
 
-# Makatels bot - miniApp
+# Makatels bot - miniApp (React)
 
 ## Описание
 

@@ -34,6 +34,7 @@ export function useBusScheduleHandler(direction: Ref<busDirectionType>) {
 
   // Первоначальная загрузка
   onMounted(() => {
+    tg.MainButton.setParams({ text: mainBtn.value });
     tg.MainButton.show();
     fetchAndParseSchedule(direction.value);
   });
