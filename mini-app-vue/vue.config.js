@@ -13,9 +13,9 @@ module.exports = defineConfig({
     ],
   },
   devServer: {
-    allowedHosts: "all", // Разрешить все хосты (для ngrok)
-    server: {
-      type: "https", // https для ngrok
-    },
+    // allowedHosts: "all", // Разрешить все хосты (для ngrok)
+    // server: {
+    //   type: "https", // https для ngrok
+    // },
   },
 });

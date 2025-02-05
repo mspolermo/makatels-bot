@@ -35,7 +35,7 @@
     "eslint-plugin-vue": "^8.0.3",
     "prettier": "^2.4.1",
     "telegram-webapps": "^7.0.0",
-    "typescript": "~4.5.5"
+    "typescript": "^5.7.3"
   },
   "eslintConfig": {
     "root": true,
