@@ -49,7 +49,8 @@ export class ReplyChecker {
                     console.error('Ошибка при удалении сообщения:', error.message);
                     await this.emailSender.sendEmail('feedback', undefined, `Произошла ошибка при стандартном удалении собщений ботом: ${error.message}`);
                 }
-                let value = this.extractPersonalLink(emailText);
+                // Костыль, потому-что kinoland больше не шлют сообщений на почту
+                let value = mirrorType === 'hdrezka' ? this.extractPersonalLink(emailText) : 'http://kinoland.biz';
                 await this.bot.sendMessage(
                     chatId,
                     `Последний ссыль на ${this.mirrorType}: ${value}`,
