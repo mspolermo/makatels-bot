@@ -1,7 +1,7 @@
 <template>
-  <div :class="cls.getBusSchedule">
+  <div :class="cls.GetBuSchedule">
     <FilterComponent title="Фильтр:" :tabs="tabsArray" />
-    <div v-if="filtredSchedule.length">
+    <div v-if="filtredSchedule.length" :class="cls.list">
       <BusRoute
         v-for="(route, index) in filtredSchedule"
         :key="route.busNumber + index"

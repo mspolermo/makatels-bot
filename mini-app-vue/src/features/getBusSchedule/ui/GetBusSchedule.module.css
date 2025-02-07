@@ -4,6 +4,12 @@
     gap: 12px;
 }
 
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
 .filtersPanel {
     display: flex;
     justify-content: space-evenly;
