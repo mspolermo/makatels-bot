@@ -101,8 +101,8 @@ export const OnlineTaxiMenuKeyboard = new InlineKeyboardClass([
 ]);
 
 export const AdditionalMenuKeyboard = new InlineKeyboardClass([
-    [{ text: '🚍 Расписание автобусов 🚍', web_app: {url: frontendLink} }],
-    [{ text: '🚍 Расписание автобусов (VUE) 🚍', web_app: {url: frontendVueLink} }],
+    [{ text: '🚍 Расписание автобусов 🚍', web_app: {url: frontendVueLink} }],
+    [{ text: '🚍 Расписание автобусов (Old) 🚍', web_app: {url: frontendLink} }],
     [{ text: '🗳️ Предложить функционал', callback_data: 'suggest'}],
     [{ text: '📬 Пожаловаться на работу бота', callback_data: 'report'}],
     [{ text: '<-- Вернуться в главное меню', callback_data: 'mainMenu'}]

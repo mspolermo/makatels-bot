@@ -1,14 +1,19 @@
 <template>
-  <div :class="cls.GetBuSchedule">
-    <FilterComponent title="Фильтр:" :tabs="tabsArray" />
-    <div v-if="filtredSchedule.length" :class="cls.list">
-      <BusRoute
-        v-for="(route, index) in filtredSchedule"
-        :key="route.busNumber + index"
-        :route="route"
-      />
+  <div :class="cls.getBusSchedule">
+    <FilterComponent title="Фильтр:" :tabs="tabsArray" :class="cls.filtres" />
+    <div v-if="isLoading">
+      <AppLoader />
     </div>
-    <div v-else>Нет данных для отображения</div>
+    <div v-else>
+      <div v-if="filtredSchedule.length" :class="cls.list">
+        <BusRoute
+          v-for="(route, index) in filtredSchedule"
+          :key="route.busNumber + index"
+          :route="route"
+        />
+      </div>
+      <div v-else>Нет данных для отображения</div>
+    </div>
   </div>
 </template>
 
@@ -19,10 +24,11 @@ import FilterComponent from "@/shared/ui/FilterComponent/FilterComponent.vue";
 import { BusRoute } from "@/entities/busRoute";
 import cls from "./GetBusSchedule.module.css";
 import { busDirectionType } from "@/entities/busRoute/model/types/types";
+import AppLoader from "@/shared/ui/AppLoader/AppLoader.vue";
 
 export default defineComponent({
   name: "GetBusSchedule",
-  components: { FilterComponent, BusRoute },
+  components: { FilterComponent, BusRoute, AppLoader },
   props: {
     direction: {
       type: String as PropType<busDirectionType>,
@@ -31,7 +37,7 @@ export default defineComponent({
   },
   setup(props) {
     const directionRef = ref(props.direction);
-    const { filtredSchedule, activeStatus, filterHandler } =
+    const { filtredSchedule, activeStatus, filterHandler, isLoading } =
       useBusScheduleHandler(directionRef);
 
     watch(
@@ -63,6 +69,7 @@ export default defineComponent({
       cls,
       filtredSchedule,
       tabsArray,
+      isLoading,
     };
   },
 });

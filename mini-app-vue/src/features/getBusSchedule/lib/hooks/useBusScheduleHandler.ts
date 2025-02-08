@@ -16,17 +16,22 @@ export function useBusScheduleHandler(direction: Ref<busDirectionType>) {
   const filtredSchedule = ref<busScheduleType>([]);
   const activeStatus = ref<filtresType>("all");
   const mainBtn = ref<mainBtnType>("Показать ближайшие");
+  const isLoading = ref(true);
 
   // Загрузка расписания и фильтрация
   const fetchAndParseSchedule = (newDirection: busDirectionType) => {
+    isLoading.value = true;
+
     fetchHTML().then(
       (data) => {
         const parsedSchedule = parseBusSchedule(data, newDirection);
         busSchedule.value = parsedSchedule;
         filtredSchedule.value = parsedSchedule;
         mainBtn.value = "Показать ближайшие";
+        isLoading.value = false;
       },
       (error) => {
+        isLoading.value = false;
         throw new Error(error);
       }
     );
@@ -89,5 +94,6 @@ export function useBusScheduleHandler(direction: Ref<busDirectionType>) {
     filtredSchedule,
     activeStatus,
     filterHandler,
+    isLoading,
   };
 }
