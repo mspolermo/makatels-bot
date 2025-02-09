@@ -50,7 +50,7 @@ export class ReplyChecker {
                     await this.emailSender.sendEmail('feedback', undefined, `Произошла ошибка при стандартном удалении собщений ботом: ${error.message}`);
                 }
                 // Костыль, потому-что kinoland больше не шлют сообщений на почту
-                let value = mirrorType === 'hdrezka' ? this.extractPersonalLink(emailText) : 'http://kinoland.biz';
+                let value = mirrorType === 'hdrezka' ? this.extractPersonalLink(emailText) : 'zfilm-hd.org';
                 await this.bot.sendMessage(
                     chatId,
                     `Последний ссыль на ${this.mirrorType}: ${value}`,
@@ -102,6 +102,7 @@ export class ReplyChecker {
 
     // Метод для поиска и возврата актуального лика на сайт
     private extractPersonalLink(emailText: string): string {
+        console.log(emailText)
         const startIndex = emailText.indexOf(':');
         let endIndex;
         if (startIndex !== -1) {
