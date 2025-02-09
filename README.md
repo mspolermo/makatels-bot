@@ -58,8 +58,12 @@
 
 ## 🚀 Технологии
 
-Backend: Node.js, Express
-Frontend: Vue.js, React
-Парсинг: Cheerio
-Бот: Node Telegram Bot API
-Email-уведомления: Nodemailer
+- Backend: Node.js, Express
+
+- Frontend: Vue.js, React
+
+- Парсинг: Cheerio
+
+- Бот: Node Telegram Bot API
+
+- Email-уведомления: Nodemailer
